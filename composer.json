@@ -6,5 +6,7 @@
             "Austomos\\ChasterAppPhp\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "guzzlehttp/guzzle": "^7.4"
+    }
 }
