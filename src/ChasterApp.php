@@ -1,6 +1,6 @@
 <?php
 
-namespace Austomos\ChasterAppPhp;
+namespace Austomos\ChasterApp;
 
 use GuzzleHttp\Client;
 
@@ -22,6 +22,18 @@ final class ChasterApp
     public function get(string $uri, array $options = []): array
     {
         return $this->client('GET', $uri, $options);
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \JsonException
+     */
+    public function post(string $uri, ?array $body = null, array $options = []): array
+    {
+        if (is_array($body)) {
+            $options['body'] = $body;
+        }
+        return $this->client('POST', $uri, $options);
     }
 
     /**
