@@ -1,6 +1,6 @@
 <?php
 
-namespace Austomos\ChasterApp;
+namespace ChasterApp;
 
 use GuzzleHttp\Client;
 
