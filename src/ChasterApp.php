@@ -3,23 +3,22 @@
 namespace ChasterApp;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 final class ChasterApp
 {
     private string $token;
 
-    public function __construct(?string $apiToken = null)
+    public function __construct(string $apiToken)
     {
-        if (!empty($apiToken)) {
-            $this->setToken($apiToken);
-        }
+        $this->setToken($apiToken);
     }
 
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
-    public function get(string $uri, array $options = []): array
+    public function get(string $uri, array $options = []): array|object
     {
         return $this->client('GET', $uri, $options);
     }
@@ -28,7 +27,7 @@ final class ChasterApp
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
-    public function post(string $uri, ?array $body = null, array $options = []): array
+    public function post(string $uri, ?array $body = null, array $options = []): array|object
     {
         if (is_array($body)) {
             $options['body'] = $body;
@@ -37,8 +36,7 @@ final class ChasterApp
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \JsonException
+     * @throws \ChasterApp\ChasterException
      */
     protected function client(string $method, string $uri, array $options = []): array
     {
@@ -46,9 +44,16 @@ final class ChasterApp
         $client = new Client([
             'base_uri' => 'https://api.chaster.app',
         ]);
-        $response = $client->request($method, $uri, $options);
-
-        return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+        try {
+            $response = $client->request($method, $uri, $options);
+        } catch (GuzzleException $e) {
+            throw new ChasterException('Request failed: ' . $e->getMessage(), $e->getCode());
+        }
+        try {
+            return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+        } catch (\JsonException $e) {
+            throw new ChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode());
+        }
     }
 
     /**
