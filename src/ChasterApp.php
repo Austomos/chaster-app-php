@@ -4,6 +4,7 @@ namespace ChasterApp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 
 final class ChasterApp
 {
@@ -15,8 +16,7 @@ final class ChasterApp
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \JsonException
+     * @throws \ChasterApp\ChasterException
      */
     public function get(string $uri, array $options = []): array|object
     {
@@ -24,8 +24,7 @@ final class ChasterApp
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \JsonException
+     * @throws \ChasterApp\ChasterException
      */
     public function post(string $uri, ?array $body = null, array $options = []): array|object
     {
@@ -51,7 +50,7 @@ final class ChasterApp
         }
         try {
             return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             throw new ChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode());
         }
     }
