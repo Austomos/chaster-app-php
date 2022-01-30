@@ -2,7 +2,10 @@
 
 namespace ChasterApp;
 
-use ChasterApp\Api\Files\Files;
+use ChasterApp\Api\{
+    Files,
+    Locks
+};
 
 final class ChasterApp
 {
@@ -19,6 +22,11 @@ final class ChasterApp
     public function files(): Files
     {
         return new Files($this->getToken());
+    }
+
+    public function locks(): Locks
+    {
+        return new Locks($this->getToken());
     }
 
     /**
