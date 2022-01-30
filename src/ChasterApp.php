@@ -37,7 +37,7 @@ final class ChasterApp
     /**
      * @throws \ChasterApp\ChasterException
      */
-    protected function client(string $method, string $uri, array $options = []): array
+    protected function client(string $method, string $uri, array $options = []): array|object
     {
         $options['headers']['Authorization'] = 'Bearer ' . $this->getToken();
         $client = new Client([
@@ -49,7 +49,7 @@ final class ChasterApp
             throw new ChasterException('Request failed: ' . $e->getMessage(), $e->getCode());
         }
         try {
-            return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+            return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new ChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode());
         }
