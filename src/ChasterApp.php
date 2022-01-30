@@ -26,10 +26,10 @@ final class ChasterApp
     /**
      * @throws \ChasterApp\ChasterException
      */
-    public function post(string $uri, ?array $body = null, array $options = []): array|object
+    public function post(string $uri, ?array $json = null, array $options = []): array|object
     {
-        if (is_array($body)) {
-            $options['body'] = $body;
+        if (is_array($json)) {
+            $options['json'] = $json;
         }
         return $this->client('POST', $uri, $options);
     }
