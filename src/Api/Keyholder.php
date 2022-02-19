@@ -10,12 +10,6 @@ use ChasterApp\Parameters\{
 
 final class Keyholder extends Request
 {
-    private const LOCKS_SEARCH_CRITERIA = [
-        'sharedLocks' => [
-            'sharedLockIds' => [],
-            'includeKeyholderLocks' => true
-        ]
-    ];
 
     /**
      * @param \ChasterApp\Parameters\LockStatus $status
