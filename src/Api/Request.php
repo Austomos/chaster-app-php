@@ -24,7 +24,7 @@ abstract class Request
      * @throws \ChasterApp\Exception\ChasterJsonException
      * @throws \ChasterApp\Exception\ChasterRequestException
      */
-    public function get(string $uri, array $options = []): array|object
+    protected function get(string $uri, array $options = []): array|object
     {
         return $this->client('GET', $uri, $options);
     }
@@ -49,7 +49,7 @@ abstract class Request
      * @throws \ChasterApp\Exception\ChasterJsonException
      * @throws \ChasterApp\Exception\ChasterRequestException
      */
-    public function post(string $uri, ?array $json = null, array $options = []): array|object
+    protected function post(string $uri, ?array $json = null, array $options = []): array|object
     {
         if (is_array($json)) {
             $options['json'] = $json;
@@ -70,13 +70,13 @@ abstract class Request
         try {
             $response = $client->request($method, $uri, $options);
         } catch (GuzzleException $e) {
-            throw new ChasterRequestException('Request failed: ' . $e->getMessage(), $e->getCode());
+            throw new ChasterRequestException('Request failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
         $this->setStatusCode($response->getStatusCode());
         try {
             return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
-            throw new ChasterJsonException('Json decode failed: ' . $e->getMessage(), $e->getCode());
+            throw new ChasterJsonException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -91,7 +91,7 @@ abstract class Request
     /**
      * @param int $statusCode
      */
-    public function setStatusCode(int $statusCode): void
+    protected function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
     }

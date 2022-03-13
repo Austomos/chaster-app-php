@@ -6,7 +6,7 @@
             "ChasterApp\\": "src/"
         },
         "files": [
-            "src/util.php"
+            "src/utils.php"
         ]
     },
     "require": {
