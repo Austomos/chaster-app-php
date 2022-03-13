@@ -3,11 +3,13 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Exception\ChasterInvalidArgumentException;
+use ChasterApp\Utils\Utils;
 use DateTime;
 use DateTimeZone;
 
 final class Locks extends Request
 {
+    use Utils;
     /**
      * @param string $status optional, values: 'active', 'archived', 'all'
      * @return array|object
@@ -135,7 +137,7 @@ final class Locks extends Request
             throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
         }
         $required = ['displayRemainingTime'];
-        if (!array_keys_exist($required, $settings)) {
+        if (!$this->arrayKeysExist($required, $settings)) {
             throw new ChasterInvalidArgumentException('Settings are invalid', 400);
         }
         return $this->post('/locks/' . addslashes($lockId) . '/settings', $settings);

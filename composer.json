@@ -4,12 +4,10 @@
     "autoload": {
         "psr-4": {
             "ChasterApp\\": "src/"
-        },
-        "files": [
-            "src/utils.php"
-        ]
+        }
     },
     "require": {
+        "php": ">=8.1",
         "guzzlehttp/guzzle": "^7.4"
     }
 }
