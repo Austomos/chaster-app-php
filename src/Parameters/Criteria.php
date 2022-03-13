@@ -3,6 +3,7 @@
 namespace ChasterApp\Parameters;
 
 use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 
 class Criteria
 {
@@ -11,10 +12,12 @@ class Criteria
     /**
      * @return array
      */
-    #[ArrayShape(['sharedLocks' => "array"])] public function criteria(): array
+    #[Pure] #[ArrayShape(['sharedLocks' => "array"])] public function criteria(): array
     {
         return [
-            'sharedLocks' => $this->getSharedLocks(),
+            'sharedLocks' => [
+                $this->getSharedLocks(),
+            ],
         ];
     }
 

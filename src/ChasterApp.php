@@ -2,6 +2,7 @@
 
 namespace ChasterApp;
 
+use ChasterApp\Parameters\Parameters;
 use ChasterApp\Api\{Files, Keyholder, Locks};
 
 final class ChasterApp
@@ -29,6 +30,11 @@ final class ChasterApp
     public function keyholder(): Keyholder
     {
         return new Keyholder($this->getToken());
+    }
+
+    public function parameters(): Parameters
+    {
+        return new Parameters();
     }
 
     /**
