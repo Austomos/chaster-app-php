@@ -13,6 +13,22 @@ final class Conversations extends Request implements ConversationsInterface
 {
     private const CONVERSATIONS = '/conversation';
 
+    /**
+     * Find a list of conversations
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_getConversations
+     *
+     * @param int $limit The query limit
+     * @param \ChasterApp\Data\Enum\ConversationsStatus $status The conversation status
+     * @param DateTime|string $offset
+     * UTC DateTime -> format 'Y-m-d\TH:i:s.v\Z'
+     * The query offset, date of last message
+     * Use the field lastMessageAt for pagination
+     *
+     * @return object
+     *
+     * @throws JsonChasterException
+     * @throws RequestChasterException
+     */
     public function get(
         int $limit = 50,
         ConversationsStatus $status = ConversationsStatus::approved,
@@ -33,8 +49,8 @@ final class Conversations extends Request implements ConversationsInterface
     /**
      * Create a conversation
      * @link https://api.chaster.app/api/#/Messaging/MessagingController_createConversation
-     * @param array $body Array containing the body params.
      *
+     * @param array $body Mandatory, array containing the body params
      *  $body = [
      *      'users': [
      *          'string'
@@ -46,6 +62,7 @@ final class Conversations extends Request implements ConversationsInterface
      *  ]
      *
      * @return object
+     *
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
@@ -58,7 +75,12 @@ final class Conversations extends Request implements ConversationsInterface
 
     /**
      * Find conversation by user id
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_getConversationByUserId
+     *
      * @param string $userId Mandatory user ID
+     *
+     * @return object
+     *
      * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws InvalidArgumentChasterException
@@ -71,14 +93,18 @@ final class Conversations extends Request implements ConversationsInterface
 
     /**
      * Add a new message in a conversation
-     * @param string $conversationId
-     * @param array $body
-     * [
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_sendMessage
+     *
+     * @param string $conversationId Mandatory conversation ID
+     * @param array $body Mandatory, array containing the body params
+     * $body = [
      *      'attachments': 'string',
      *      'message': 'string',
      *      'nonce': 'string'
      * ]
+     *
      * @return object
+     *
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
@@ -92,8 +118,12 @@ final class Conversations extends Request implements ConversationsInterface
 
     /**
      * Find a conversation
-     * @param string $conversationId
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_getConversation
+     *
+     * @param string $conversationId Mandatory conversation ID
+     *
      * @return object
+     *
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
@@ -106,14 +136,16 @@ final class Conversations extends Request implements ConversationsInterface
 
     /**
      * Set a conversation status
-     * @param string $conversationId
-     * @param array $body
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_setConversationStatus
      *
-     *  [
+     * @param string $conversationId Mandatory conversation ID
+     * @param array $body Mandatory, array containing the body params
+     * $body = [
      *      'status': 'approved'
-     *  ]
+     * ]
      *
      * @return object
+     *
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
@@ -127,13 +159,16 @@ final class Conversations extends Request implements ConversationsInterface
 
     /**
      * Set a conversation unread status
-     * @param string $conversationId
-     * @param array $body
-     *  [
-     *        'unread': true
-     *  ]
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_setConversationUnread
+     *
+     * @param string $conversationId Mandatory conversation ID
+     * @param array $body Mandatory, array containing the body params
+     * $body = [
+     *      'unread': true
+     * ]
      *
      * @return object
+     *
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
@@ -147,10 +182,14 @@ final class Conversations extends Request implements ConversationsInterface
 
     /**
      * Find messages in a conversation
-     * @param string $conversationId
-     * @param int $limit
-     * @param string|null $lastId
+     * @link https://api.chaster.app/api/#/Messaging/MessagingController_getMessages
+     *
+     * @param string $conversationId Mandatory conversation ID
+     * @param int $limit Query limit
+     * @param string|null $lastId Last message ID
+     *
      * @return object
+     *
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
