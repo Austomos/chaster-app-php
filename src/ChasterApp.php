@@ -2,11 +2,17 @@
 
 namespace ChasterApp;
 
+use ChasterApp\Interfaces\ChasterFactoryInterface;
 use ChasterApp\Parameters\Parameters;
-use ChasterApp\Api\{Conversations, Files, Keyholder, Locks};
+use ChasterApp\Api\{
+    Conversations,
+    Files,
+    Keyholder,
+    Locks
+};
 use JetBrains\PhpStorm\Pure;
 
-final class ChasterApp
+final class ChasterApp implements ChasterFactoryInterface
 {
     private string $token;
 
@@ -18,7 +24,7 @@ final class ChasterApp
         $this->setToken($token);
     }
 
-    public function conversations(): Conversations
+    #[Pure] public function conversations(): Conversations
     {
         return new Conversations($this->getToken());
     }
