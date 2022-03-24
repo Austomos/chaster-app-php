@@ -3,18 +3,24 @@
 namespace ChasterApp;
 
 use ChasterApp\Parameters\Parameters;
-use ChasterApp\Api\{Files, Keyholder, Locks};
+use ChasterApp\Api\{Conversations, Files, Keyholder, Locks};
+use JetBrains\PhpStorm\Pure;
 
 final class ChasterApp
 {
     private string $token;
 
     /**
-     * @param string $apiToken
+     * @param string $token
      */
-    public function __construct(string $apiToken)
+    public function __construct(string $token)
     {
-        $this->setToken($apiToken);
+        $this->setToken($token);
+    }
+
+    public function conversations(): Conversations
+    {
+        return new Conversations($this->getToken());
     }
 
     public function files(): Files
@@ -22,17 +28,18 @@ final class ChasterApp
         return new Files($this->getToken());
     }
 
-    public function locks(): Locks
-    {
-        return new Locks($this->getToken());
-    }
-
     public function keyholder(): Keyholder
     {
         return new Keyholder($this->getToken());
     }
 
-    public function parameters(): Parameters
+    public function locks(): Locks
+    {
+        return new Locks($this->getToken());
+    }
+
+
+    #[Pure] public function parameters(): Parameters
     {
         return new Parameters();
     }

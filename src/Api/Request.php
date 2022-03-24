@@ -2,8 +2,11 @@
 
 namespace ChasterApp\Api;
 
-use ChasterApp\Exception\ChasterJsonException;
-use ChasterApp\Exception\ChasterRequestException;
+use ChasterApp\Exception\{
+    InvalidArgumentChasterException,
+    JsonChasterException,
+    RequestChasterException
+};
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
@@ -12,29 +15,20 @@ abstract class Request
 {
     private const BASE_URI = 'https://api.chaster.app';
     private string $token;
-
     private int $statusCode;
+    private string $reasonPhrase;
 
     public function __construct(string $token)
     {
-        $this->setToken($token);
-    }
-
-    /**
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
-     */
-    protected function get(string $uri, array $options = []): array|object
-    {
-        return $this->client('GET', $uri, $options);
+        $this->token = $token;
     }
 
     /**
      * @return string
      */
-    protected function getToken(): string
+    public function getReasonPhrase(): string
     {
-        return $this->token;
+        return $this->reasonPhrase;
     }
 
     /**
@@ -46,20 +40,58 @@ abstract class Request
     }
 
     /**
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
-    protected function post(string $uri, ?array $json = null, array $options = []): array|object
+    protected function getClient(string $uri, ?array $query = null, array $options = []): array|object
     {
-        if (is_array($json)) {
-            $options['json'] = $json;
+        if (is_array($query)) {
+            $options['query'] = $query;
+        }
+        return $this->client('GET', $uri, $options);
+    }
+
+    /**
+     * @param string $uri URI specific of the call
+     * @param array|null $body Array
+     * @param array $options
+     * @return object
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     */
+    protected function postClient(string $uri, ?array $body = null, array $options = []): object
+    {
+        if (is_array($body)) {
+            $options['json'] = $body;
         }
         return $this->client('POST', $uri, $options);
     }
 
     /**
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @param string $uri
+     * @param array|null $body
+     * @param array $options
+     * @return object
      * @throws \ChasterApp\Exception\ChasterJsonException
+     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     */
+    protected function putClient(string $uri, ?array $body = null, array $options = []): object
+    {
+        if (is_array($body)) {
+            $options['json'] = $body;
+        }
+        return $this->client('PUT', $uri, $options);
+    }
+
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param array $options
+     * @return array|object
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     protected function client(string $method, string $uri, array $options = []): array|object
     {
@@ -70,30 +102,33 @@ abstract class Request
         try {
             $response = $client->request($method, $uri, $options);
         } catch (GuzzleException $e) {
-            throw new ChasterRequestException('Request failed: ' . $e->getMessage(), $e->getCode(), $e);
+            throw new RequestChasterException('Request failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
-        $this->setStatusCode($response->getStatusCode());
+        $this->statusCode = $response->getStatusCode();
+        $this->reasonPhrase = $response->getReasonPhrase();
         try {
-            return json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+            return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
-            throw new ChasterJsonException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
+            throw new JsonChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
     }
 
     /**
-     * @param string $token
+     * @return string
      */
-    protected function setToken(string $token): void
+    public function getToken(): string
     {
-        $this->token = $token;
+        return $this->token;
     }
 
     /**
-     * @param int $statusCode
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      */
-    protected function setStatusCode(int $statusCode): void
+    protected function checkMandatory(mixed $value, string $name): void
     {
-        $this->statusCode = $statusCode;
+        if (empty($value)) {
+            throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
+        }
     }
 
 }

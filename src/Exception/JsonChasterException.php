@@ -2,7 +2,7 @@
 
 namespace ChasterApp\Exception;
 
-class ChasterJsonException extends ChasterException
+class JsonChasterException extends ChasterException
 {
 
 }

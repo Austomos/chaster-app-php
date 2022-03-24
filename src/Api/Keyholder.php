@@ -2,7 +2,7 @@
 
 namespace ChasterApp\Api;
 
-use ChasterApp\Exception\ChasterInvalidArgumentException;
+use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Parameters\{
     LockStatus,
     Criteria
@@ -18,9 +18,9 @@ final class Keyholder extends Request
      * @param int|null $limit
      * @param \ChasterApp\Parameters\Criteria|null $criteria
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function locksSearch(
         LockStatus $status,
@@ -30,10 +30,10 @@ final class Keyholder extends Request
         ?Criteria $criteria = null
     ): array|object {
         if (is_int($limit) && $page <= 0) {
-            throw new ChasterInvalidArgumentException('Page must not be less than 0', 400);
+            throw new InvalidArgumentChasterException('Page must not be less than 0', 400);
         }
         if (is_int($limit) && $limit <= 0) {
-            throw new ChasterInvalidArgumentException('Limit must not be less than 1', 400);
+            throw new InvalidArgumentChasterException('Limit must not be less than 1', 400);
         }
 
         $json = [
@@ -43,6 +43,6 @@ final class Keyholder extends Request
             'page' => $page,
             'limit' => $limit
         ];
-        return $this->post('/keyholder/locks/search', $json);
+        return $this->postClient('/keyholder/locks/search', $json);
     }
 }

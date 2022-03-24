@@ -2,7 +2,7 @@
 
 namespace ChasterApp\Exception;
 
-class ChasterInvalidArgumentException extends ChasterException
+class InvalidArgumentChasterException extends ChasterException
 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace ChasterApp\Api;
 
-use ChasterApp\Exception\ChasterInvalidArgumentException;
+use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Utils\Utils;
 use DateTime;
 use DateTimeZone;
@@ -13,134 +13,134 @@ final class Locks extends Request
     /**
      * @param string $status optional, values: 'active', 'archived', 'all'
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function locks(string $status = 'active'): array|object
     {
         $query = match ($status) {
             'active', 'archived', 'all' => ['status' => $status],
-            default => throw new ChasterInvalidArgumentException('Invalid status argument', 400),
+            default => throw new InvalidArgumentChasterException('Invalid status argument', 400),
         };
-        return $this->get('/locks', ['query' => $query]);
+        return $this->getClient('/locks', ['query' => $query]);
     }
 
     /**
      * @param string $lockId
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockId(string $lockId): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
-        return $this->get('/locks/' . addslashes($lockId));
+        return $this->getClient('/locks/' . addslashes($lockId));
     }
 
     /**
      * @param string $lockId
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockArchive(string $lockId): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
-        return $this->post('/locks/' . addslashes($lockId) . '/archive');
+        return $this->postClient('/locks/' . addslashes($lockId) . '/archive');
     }
 
     /**
      * @param string $lockId
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockArchiveKeyholder(string $lockId): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
-        return $this->post('/locks/' . addslashes($lockId) . '/archive/keyholder');
+        return $this->postClient('/locks/' . addslashes($lockId) . '/archive/keyholder');
     }
 
     /**
      * @param string $lockId
      * @param int|float $duration
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockUpdateTime(string $lockId, int|float $duration): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
 
         if (!is_numeric($duration)) {
-            throw new ChasterInvalidArgumentException('Duration must be a numeric', 400);
+            throw new InvalidArgumentChasterException('Duration must be a numeric', 400);
         }
         $json = ['duration' => $duration];
-        return $this->post('/locks/' . addslashes($lockId) . '/update-time', $json);
+        return $this->postClient('/locks/' . addslashes($lockId) . '/update-time', $json);
     }
 
     /**
      * @param string $lockId
      * @param bool $isFrozen
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockFreeze(string $lockId, bool $isFrozen): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
         $json = ['isFrozen' => $isFrozen];
-        return $this->post('/locks/' . addslashes($lockId) . '/freeze', $json);
+        return $this->postClient('/locks/' . addslashes($lockId) . '/freeze', $json);
     }
 
     /**
      * @param string $lockId
      * @return array|object check statusCode
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockUnlock(string $lockId): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
-        return $this->post('/locks/' . addslashes($lockId) . '/unlock');
+        return $this->postClient('/locks/' . addslashes($lockId) . '/unlock');
     }
 
     /**
      * @param string $lockId
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockSettings(string $lockId, array $settings): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
         $required = ['displayRemainingTime'];
         if (!$this->arrayKeysExist($required, $settings)) {
-            throw new ChasterInvalidArgumentException('Settings are invalid', 400);
+            throw new InvalidArgumentChasterException('Settings are invalid', 400);
         }
-        return $this->post('/locks/' . addslashes($lockId) . '/settings', $settings);
+        return $this->postClient('/locks/' . addslashes($lockId) . '/settings', $settings);
     }
 
     /**
@@ -148,9 +148,9 @@ final class Locks extends Request
      * @param \DateTime|null $maxLimitDate
      * @param bool $disableMaxLimitDate
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockMaxLimitDate(
         string $lockId,
@@ -159,10 +159,10 @@ final class Locks extends Request
     ): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
         if ($maxLimitDate === null && !$disableMaxLimitDate) {
-            throw new ChasterInvalidArgumentException('Max limit date is mandatory if max limit date is active', 400);
+            throw new InvalidArgumentChasterException('Max limit date is mandatory if max limit date is active', 400);
         }
         if ($maxLimitDate === null && $disableMaxLimitDate) {
             $given = new DateTime('2014-12-12 14:18:00');
@@ -176,36 +176,36 @@ final class Locks extends Request
             'maxLimitDate' => $maxLimitDate->format('Y-m-d\TH:i:s.v\Z'),
             'disableMaxLimitDate' => $disableMaxLimitDate,
         ];
-        return $this->post('/locks/' . addslashes($lockId) . '/max-limit-date', $json);
+        return $this->postClient('/locks/' . addslashes($lockId) . '/max-limit-date', $json);
     }
 
     /**
      * @param string $lockId
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockTrustKeyholder(string $lockId): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
-        return $this->post('/locks/' . addslashes($lockId) . '/trust-keyholder');
+        return $this->postClient('/locks/' . addslashes($lockId) . '/trust-keyholder');
     }
 
     /**
      * @param string $lockId
      * @return array|object
-     * @throws \ChasterApp\Exception\ChasterInvalidArgumentException
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
     public function lockCombination(string $lockId): array|object
     {
         if (empty($lockId)) {
-            throw new ChasterInvalidArgumentException('The lock id is mandatory', 400);
+            throw new InvalidArgumentChasterException('The lock id is mandatory', 400);
         }
-        return $this->get('/locks/' . addslashes($lockId) . '/trust-keyholder');
+        return $this->getClient('/locks/' . addslashes($lockId) . '/trust-keyholder');
     }
 }

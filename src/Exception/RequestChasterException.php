@@ -2,7 +2,7 @@
 
 namespace ChasterApp\Exception;
 
-class ChasterRequestException extends ChasterException
+class RequestChasterException extends ChasterException
 {
 
 }
