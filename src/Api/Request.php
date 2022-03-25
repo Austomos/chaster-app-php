@@ -40,10 +40,10 @@ abstract class Request
     }
 
     /**
-     * @throws \ChasterApp\Exception\JsonChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws JsonChasterException
+     * @throws RequestChasterException
      */
-    protected function getClient(string $uri, ?array $query = null, array $options = []): array|object
+    protected function getClient(string $uri, ?array $query = null, array $options = []): object
     {
         if (is_array($query)) {
             $options['query'] = $query;
@@ -55,9 +55,10 @@ abstract class Request
      * @param string $uri URI specific of the call
      * @param array|null $body Array
      * @param array $options
+     *
      * @return object
-     * @throws \ChasterApp\Exception\JsonChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws JsonChasterException
+     * @throws RequestChasterException
      */
     protected function postClient(string $uri, ?array $body = null, array $options = []): object
     {
@@ -71,11 +72,10 @@ abstract class Request
      * @param string $uri
      * @param array|null $body
      * @param array $options
+     *
      * @return object
-     * @throws \ChasterApp\Exception\ChasterJsonException
-     * @throws \ChasterApp\Exception\ChasterRequestException
-     * @throws \ChasterApp\Exception\JsonChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws JsonChasterException
+     * @throws RequestChasterException
      */
     protected function putClient(string $uri, ?array $body = null, array $options = []): object
     {
@@ -89,11 +89,12 @@ abstract class Request
      * @param string $method
      * @param string $uri
      * @param array $options
+     *
      * @return array|object
-     * @throws \ChasterApp\Exception\JsonChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws JsonChasterException
+     * @throws RequestChasterException
      */
-    protected function client(string $method, string $uri, array $options = []): array|object
+    protected function client(string $method, string $uri, array $options = []): object
     {
         $options['headers']['Authorization'] = 'Bearer ' . $this->getToken();
         $client = new Client([
@@ -107,7 +108,7 @@ abstract class Request
         $this->statusCode = $response->getStatusCode();
         $this->reasonPhrase = $response->getReasonPhrase();
         try {
-            return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+            return json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new JsonChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
@@ -122,7 +123,7 @@ abstract class Request
     }
 
     /**
-     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws InvalidArgumentChasterException
      */
     protected function checkMandatory(mixed $value, string $name): void
     {
