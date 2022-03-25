@@ -4,12 +4,7 @@ namespace ChasterApp;
 
 use ChasterApp\Interfaces\ChasterFactoryInterface;
 use ChasterApp\Parameters\Parameters;
-use ChasterApp\Api\{
-    Conversations,
-    Files,
-    Keyholder,
-    Locks
-};
+use ChasterApp\Api\{Conversations, Files, Keyholder, Locks, SharedLocks};
 use JetBrains\PhpStorm\Pure;
 
 final class ChasterApp implements ChasterFactoryInterface
@@ -29,21 +24,26 @@ final class ChasterApp implements ChasterFactoryInterface
         return new Conversations($this->getToken());
     }
 
-    public function files(): Files
+    #[Pure] public function files(): Files
     {
         return new Files($this->getToken());
     }
 
-    public function keyholder(): Keyholder
+    #[Pure] public function keyholder(): Keyholder
     {
         return new Keyholder($this->getToken());
     }
 
-    public function locks(): Locks
+    #[Pure] public function locks(): Locks
     {
         return new Locks($this->getToken());
     }
 
+
+    #[Pure] public function sharedLocks(): SharedLocks
+    {
+        return new SharedLocks($this->getToken());
+    }
 
     #[Pure] public function parameters(): Parameters
     {
@@ -65,6 +65,5 @@ final class ChasterApp implements ChasterFactoryInterface
     {
         $this->token = $token;
     }
-
 
 }

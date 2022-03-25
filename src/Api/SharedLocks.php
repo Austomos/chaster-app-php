@@ -3,8 +3,6 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Data\Enum\SharedLockStatus;
-use ChasterApp\Exception\ChasterJsonException;
-use ChasterApp\Exception\ChasterRequestException;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
