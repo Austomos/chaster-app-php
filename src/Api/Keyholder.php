@@ -5,6 +5,7 @@ namespace ChasterApp\Api;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
+use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
 
 final class Keyholder extends Request implements KeyholderInterface
@@ -35,10 +36,12 @@ final class Keyholder extends Request implements KeyholderInterface
      * @throws InvalidArgumentChasterException
      * @throws JsonChasterException
      * @throws RequestChasterException
+     * @throws ResponseChasterException
      */
     public function search(array $body): object
     {
         $this->checkMandatory($body, 'Body');
-        return $this->postClient(self::KEYHOLDER . '/locks/search', $body);
+        $this->postClient(self::KEYHOLDER . '/locks/search', $body);
+        return $this->getResponseContents(201);
     }
 }
