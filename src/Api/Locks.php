@@ -2,14 +2,87 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\Data\Enum\LocksStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\JsonChasterException;
+use ChasterApp\Exception\RequestChasterException;
+use ChasterApp\Interfaces\Api\LocksInterface;
 use ChasterApp\Utils\Utils;
 use DateTime;
 use DateTimeZone;
 
-final class Locks extends Request
+final class Locks extends Request implements LocksInterface
 {
     use Utils;
+
+    private const LOCKS = '/locks';
+
+    /**
+     * Get user locks
+     * Returns a list of all user locks
+     * By default, only active locks are returned.
+     * @link https://api.chaster.app/api/#/Locks/LockController_findAll
+     *
+     * @param LocksStatus $status   The lock status
+     *                              Available values : active, archived, all
+     *                              Default value : active
+     *
+     * @return object
+     *
+     * @throws JsonChasterException
+     * @throws RequestChasterException
+     */
+    public function get(LocksStatus $status = LocksStatus::active): object
+    {
+        return $this->getClient(self::LOCKS, ['status' => $status->name]);
+    }
+
+    /**
+     * Update lock duration
+     * Adds or removes duration to a lock. Keyholders can add or remove time, while wearers can only add time.
+     * @link https://api.chaster.app/api/#/Locks/LockController_updateTime
+     *
+     * @param string $lockId Mandatory. The lock id
+     * @param array $body Mandatory. Array containing the body parameters
+     *
+     *      {
+     *          'duration': 0
+     *      }
+     *
+     * @throws InvalidArgumentChasterException
+     * @throws JsonChasterException
+     * @throws RequestChasterException
+     */
+    public function updateTime(string $lockId, array $body): void
+    {
+        $this->checkMandatory($lockId, 'Lock ID');
+        $this->checkMandatory($body, 'Body');
+        $this->postClient(self::LOCKS . '/' . $lockId . '/update-time', $body);
+    }
+
+    /**
+     * Freeze a lock
+     * Freezes a lock. Keyholders can use this endpoint to freeze wearer's locks.
+     * @link https://api.chaster.app/api/#/Locks/LockController_setFreeze
+     *
+     * @param string $lockId Mandatory. The lock id
+     * @param array $body Mandatory. Array containing the body parameters
+     *
+     *      {
+     *          'isFrozen': true
+     *      }
+     *
+     * @throws InvalidArgumentChasterException
+     * @throws JsonChasterException
+     * @throws RequestChasterException
+     */
+    public function freeze(string $lockId, array $body): void
+    {
+        $this->checkMandatory($lockId, 'Lock ID');
+        $this->checkMandatory($body, 'Body');
+        $this->postClient(self::LOCKS . '/' . $lockId . '/freeze', $body);
+    }
+
     /**
      * @param string $status optional, values: 'active', 'archived', 'all'
      * @return array|object
@@ -208,4 +281,5 @@ final class Locks extends Request
         }
         return $this->getClient('/locks/' . addslashes($lockId) . '/trust-keyholder');
     }
+
 }

@@ -18,7 +18,7 @@ final class Conversations extends Request implements ConversationsInterface
      * @link https://api.chaster.app/api/#/Messaging/MessagingController_getConversations
      *
      * @param int $limit The query limit
-     * @param \ChasterApp\Data\Enum\ConversationsStatus $status The conversation status
+     * @param ConversationsStatus $status The conversation status
      * @param DateTime|string $offset
      * UTC DateTime -> format 'Y-m-d\TH:i:s.v\Z'
      * The query offset, date of last message
