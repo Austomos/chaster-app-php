@@ -4,7 +4,7 @@ namespace ChasterApp;
 
 use ChasterApp\Interfaces\ChasterFactoryInterface;
 use ChasterApp\Parameters\Parameters;
-use ChasterApp\Api\{Conversations, Files, Keyholder, Locks, SharedLocks};
+use ChasterApp\Api\{Conversations, Files, Keyholder, Locks, SharedLocks, Util};
 use JetBrains\PhpStorm\Pure;
 
 final class ChasterApp implements ChasterFactoryInterface
@@ -13,10 +13,14 @@ final class ChasterApp implements ChasterFactoryInterface
 
     /**
      * @param string $token
+     *
+     * @throws Exception\RequestChasterException
+     * @throws Exception\ResponseChasterException
      */
     public function __construct(string $token)
     {
         $this->setToken($token);
+        (new Util($token))->ping();
     }
 
     #[Pure] public function conversations(): Conversations
