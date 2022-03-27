@@ -12,7 +12,7 @@ use DateTime;
 
 final class Conversations extends Request implements ConversationsInterface
 {
-    private const CONVERSATIONS = '/conversation';
+    private const CONVERSATIONS = '/conversations';
 
     /**
      * Find a list of conversations
