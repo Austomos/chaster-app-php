@@ -3,58 +3,71 @@
 namespace ChasterApp;
 
 use ChasterApp\Interfaces\ChasterFactoryInterface;
-use ChasterApp\Parameters\Parameters;
 use ChasterApp\Api\{Conversations, Files, Keyholder, Locks, SharedLocks, Util};
 use JetBrains\PhpStorm\Pure;
 
+/**
+ *
+ */
 final class ChasterApp implements ChasterFactoryInterface
 {
-    private string $token;
+    private ChasterAuth $chasterAuth;
 
     /**
-     * @param string $token
-     *
-     * @throws Exception\RequestChasterException
-     * @throws Exception\ResponseChasterException
+     * @param string $token API token
      */
-    public function __construct(string $token)
+    public function __construct(ChasterAuth $chasterAuth)
     {
-        $this->setToken($token);
-        (new Util($token))->ping();
+        $this->chasterAuth = $chasterAuth;
     }
 
+    /**
+     * Conversation route
+     * @return Conversations
+     */
     #[Pure] public function conversations(): Conversations
     {
         return new Conversations($this->getToken());
     }
 
+    /**
+     * Files route
+     * @return Files
+     */
     #[Pure] public function files(): Files
     {
         return new Files($this->getToken());
     }
 
+    /**
+     * Keyholder routes
+     * @return Keyholder
+     */
     #[Pure] public function keyholder(): Keyholder
     {
         return new Keyholder($this->getToken());
     }
 
+    /**
+     * Locks routes
+     * @return Locks
+     */
     #[Pure] public function locks(): Locks
     {
         return new Locks($this->getToken());
     }
 
-
+    /**
+     * SharedLocks routes
+     * @return SharedLocks
+     */
     #[Pure] public function sharedLocks(): SharedLocks
     {
         return new SharedLocks($this->getToken());
     }
 
-    #[Pure] public function parameters(): Parameters
-    {
-        return new Parameters();
-    }
-
     /**
+     * Internal method to get the api token
      * @return string
      */
     private function getToken(): string
