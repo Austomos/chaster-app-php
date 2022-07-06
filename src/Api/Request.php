@@ -138,5 +138,4 @@ abstract class Request extends Response
             throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
         }
     }
-
 }

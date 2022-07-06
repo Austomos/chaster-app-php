@@ -9,8 +9,8 @@ use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\SharedLocksInterface;
 
-class SharedLocks extends Request implements SharedLocksInterface {
-
+class SharedLocks extends Request implements SharedLocksInterface
+{
     /**
      * Find all user shared lock
      * Returns a list of all user shared locks
@@ -181,5 +181,4 @@ class SharedLocks extends Request implements SharedLocksInterface {
     {
         return 'locks/shared-locks';
     }
-
 }

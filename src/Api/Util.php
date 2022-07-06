@@ -24,5 +24,4 @@ class Util extends Request
         // TODO: Implement getBaseRoute() method.
         return '';
     }
-
 }

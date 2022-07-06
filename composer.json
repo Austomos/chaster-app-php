@@ -8,7 +8,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ChasterApp\\Tests": "tests/"
+            "ChasterApp\\Tests\\": "tests/"
         }
     },
     "require": {
@@ -16,6 +16,12 @@
         "guzzlehttp/guzzle": "^7.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3"
+    },
+    "scripts": {
+        "check": "phpcs src --standard=PSR12 -sp",
+        "fix": "phpcbf src --standard=PSR12 -p",
+        "test": "phpunit tests"
     }
 }

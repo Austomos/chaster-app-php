@@ -2,8 +2,8 @@
 
 namespace ChasterApp\Utils;
 
-trait Utils {
-
+trait Utils
+{
     /**
      * @param array $requiredKeys key list to test in the array to check
      * @param array $arrayToCheck array where key list is checked
@@ -15,5 +15,4 @@ trait Utils {
         $missingRequiredKeys = array_diff($requiredKeys, $inputKeys);
         return empty($missingRequiredKeys);
     }
-
 }

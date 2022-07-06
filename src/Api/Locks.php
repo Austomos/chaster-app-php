@@ -11,7 +11,8 @@ use ChasterApp\Exception\{InvalidArgumentChasterException,
 use ChasterApp\Interfaces\Api\LocksInterface;
 use ChasterApp\Utils\Utils;
 
-class Locks extends Request implements LocksInterface {
+class Locks extends Request implements LocksInterface
+{
     use Utils;
 
     public function getBaseRoute(): string
@@ -88,5 +89,4 @@ class Locks extends Request implements LocksInterface {
         $this->postClient($lockId . '/freeze', $body);
         $this->checkResponseCode(204);
     }
-
 }
