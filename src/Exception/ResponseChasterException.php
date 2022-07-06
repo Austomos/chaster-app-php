@@ -2,7 +2,6 @@
 
 namespace ChasterApp\Exception;
 
-use JetBrains\PhpStorm\Pure;
 use Throwable;
 
 class ResponseChasterException extends ChasterException
@@ -10,7 +9,7 @@ class ResponseChasterException extends ChasterException
     private string $reasonPhrase;
     private int $statusCode;
 
-    #[Pure] public function __construct($reasonPhrase, $statusCode, $message = "", $code = 0, Throwable $previous = null)
+    public function __construct($reasonPhrase, $statusCode, $message = "", $code = 0, Throwable $previous = null)
     {
         $this->reasonPhrase = $reasonPhrase;
         $this->statusCode = $statusCode;

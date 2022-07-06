@@ -10,10 +10,8 @@ use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\ConversationsInterface;
 use DateTime;
 
-final class Conversations extends Request implements ConversationsInterface
+class Conversations extends Request implements ConversationsInterface
 {
-    private const CONVERSATIONS = '/conversations';
-
     /**
      * Find a list of conversations
      * @link https://api.chaster.app/api/#/Messaging/MessagingController_getConversations
@@ -44,7 +42,7 @@ final class Conversations extends Request implements ConversationsInterface
                 $offset instanceof DateTime => $offset->format('Y-m-d\TH:i:s.v\Z')
             };
         }
-        $this->getClient(self::CONVERSATIONS, $query);
+        $this->getClient('', $query);
         return $this->getResponseContents(200);
     }
 
@@ -74,7 +72,7 @@ final class Conversations extends Request implements ConversationsInterface
     public function create(array $body): object
     {
         $this->checkMandatory($body, 'Body');
-        $this->postClient(self::CONVERSATIONS, $body);
+        $this->postClient('', $body);
         return $this->getResponseContents(201);
     }
 
@@ -94,7 +92,7 @@ final class Conversations extends Request implements ConversationsInterface
     public function byUser(string $userId): object
     {
         $this->checkMandatory($userId, 'User ID');
-        $this->getClient(self::CONVERSATIONS . '/by-user/' . $userId);
+        $this->getClient('by-user/' . $userId);
         return $this->getResponseContents(200);
     }
 
@@ -122,7 +120,7 @@ final class Conversations extends Request implements ConversationsInterface
     {
         $this->checkMandatory($conversationId, 'Conversation ID');
         $this->checkMandatory($body, 'Body');
-        $this->postClient(self::CONVERSATIONS . '/' . $conversationId, $body);
+        $this->postClient($conversationId, $body);
         return $this->getResponseContents(201);
     }
 
@@ -142,7 +140,7 @@ final class Conversations extends Request implements ConversationsInterface
     public function find(string $conversationId): object
     {
         $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->getClient(self::CONVERSATIONS . '/' . $conversationId);
+        $this->getClient($conversationId);
         return $this->getResponseContents(200);
     }
 
@@ -157,7 +155,6 @@ final class Conversations extends Request implements ConversationsInterface
      * ]
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
@@ -165,7 +162,7 @@ final class Conversations extends Request implements ConversationsInterface
     {
         $this->checkMandatory($conversationId, 'Conversation ID');
         $this->checkMandatory($body, 'Body');
-        $this->putClient(self::CONVERSATIONS . '/' . $conversationId . '/status');
+        $this->putClient($conversationId . '/status');
         $this->checkResponseCode(200);
     }
 
@@ -180,7 +177,6 @@ final class Conversations extends Request implements ConversationsInterface
      * ]
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
@@ -188,7 +184,7 @@ final class Conversations extends Request implements ConversationsInterface
     {
         $this->checkMandatory($conversationId, 'Conversation ID');
         $this->checkMandatory($body, 'Body');
-        $this->putClient(self::CONVERSATIONS . '/' . $conversationId . '/unread');
+        $this->putClient($conversationId . '/unread');
         $this->checkResponseCode(200);
     }
 
@@ -214,8 +210,12 @@ final class Conversations extends Request implements ConversationsInterface
         if (isset($lastId)) {
             $query['lastId'] = $lastId;
         }
-        $this->getClient(self::CONVERSATIONS . '/' . $conversationId . '/messages', $query);
+        $this->getClient($conversationId . '/messages', $query);
         return $this->getResponseContents(200);
     }
 
+    public function getBaseRoute(): string
+    {
+        return 'conversations';
+    }
 }

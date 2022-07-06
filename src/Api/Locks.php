@@ -3,8 +3,7 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Data\Enum\LocksStatus;
-use ChasterApp\Exception\{
-    InvalidArgumentChasterException,
+use ChasterApp\Exception\{InvalidArgumentChasterException,
     JsonChasterException,
     RequestChasterException,
     ResponseChasterException,
@@ -12,11 +11,14 @@ use ChasterApp\Exception\{
 use ChasterApp\Interfaces\Api\LocksInterface;
 use ChasterApp\Utils\Utils;
 
-final class Locks extends Request implements LocksInterface
+class Locks extends Request implements LocksInterface
 {
     use Utils;
 
-    private const LOCKS = '/locks';
+    public function getBaseRoute(): string
+    {
+        return 'locks';
+    }
 
     /**
      * Get user locks
@@ -36,7 +38,7 @@ final class Locks extends Request implements LocksInterface
      */
     public function locks(LocksStatus $status = LocksStatus::active): object
     {
-        $this->getClient(self::LOCKS, ['status' => $status->name]);
+        $this->getClient('', ['status' => $status->name]);
         return $this->getResponseContents(200);
     }
 
@@ -60,7 +62,7 @@ final class Locks extends Request implements LocksInterface
     {
         $this->checkMandatory($lockId, 'Lock ID');
         $this->checkMandatory($body, 'Body');
-        $this->postClient(self::LOCKS . '/' . $lockId . '/update-time', $body);
+        $this->postClient($lockId . '/update-time', $body);
         $this->checkResponseCode(204);
     }
 
@@ -84,8 +86,7 @@ final class Locks extends Request implements LocksInterface
     {
         $this->checkMandatory($lockId, 'Lock ID');
         $this->checkMandatory($body, 'Body');
-        $this->postClient(self::LOCKS . '/' . $lockId . '/freeze', $body);
+        $this->postClient($lockId . '/freeze', $body);
         $this->checkResponseCode(204);
     }
-
 }

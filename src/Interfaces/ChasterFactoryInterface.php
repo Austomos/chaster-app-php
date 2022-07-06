@@ -7,11 +7,10 @@ use ChasterApp\Api\Files;
 use ChasterApp\Api\Keyholder;
 use ChasterApp\Api\Locks;
 use ChasterApp\Api\SharedLocks;
-use ChasterApp\ChasterAuth;
 
 interface ChasterFactoryInterface
 {
-    public function __construct(ChasterAuth $chasterAuth);
+    public function __construct(string $accessToken);
     public function conversations(): Conversations;
     public function files(): Files;
     public function keyholder(): Keyholder;

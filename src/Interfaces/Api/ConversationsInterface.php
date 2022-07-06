@@ -7,7 +7,11 @@ use DateTime;
 
 interface ConversationsInterface
 {
-    public function get(int $limit = 50, ConversationsStatus $status = ConversationsStatus::approved, string|DateTime $offset = ''): object;
+    public function get(
+        int $limit = 50,
+        ConversationsStatus $status = ConversationsStatus::approved,
+        string|DateTime $offset = ''
+    ): object;
     public function create(array $body): object;
     public function byUser(string $userId): object;
     public function send(string $conversationId, array $body): object;

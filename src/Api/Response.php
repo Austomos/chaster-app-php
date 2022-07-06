@@ -64,7 +64,8 @@ abstract class Response
                 $this->getReasonPhrase(),
                 $this->getStatusCode(),
                 'Response failed, code expected: ' . $expectedCode . ', response code: ' . $this->getStatusCode()
-                . ', reason: ' . $this->getReasonPhrase());
+                . ', reason: ' . $this->getReasonPhrase()
+            );
         }
     }
 }

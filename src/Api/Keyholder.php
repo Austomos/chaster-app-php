@@ -8,9 +8,12 @@ use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
 
-final class Keyholder extends Request implements KeyholderInterface
+class Keyholder extends Request implements KeyholderInterface
 {
-    private const KEYHOLDER = '/keyholder';
+    public function getBaseRoute(): string
+    {
+        return 'keyholder';
+    }
 
     /**
      * Search locked users
@@ -41,7 +44,7 @@ final class Keyholder extends Request implements KeyholderInterface
     public function search(array $body): object
     {
         $this->checkMandatory($body, 'Body');
-        $this->postClient(self::KEYHOLDER . '/locks/search', $body);
+        $this->postClient('locks/search', $body);
         return $this->getResponseContents(201);
     }
 }

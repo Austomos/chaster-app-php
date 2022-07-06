@@ -9,10 +9,8 @@ use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\SharedLocksInterface;
 
-final class SharedLocks extends Request implements SharedLocksInterface
+class SharedLocks extends Request implements SharedLocksInterface
 {
-    private const LOCKS_SHARED_LOCKS = '/locks/shared-locks';
-
     /**
      * Find all user shared lock
      * Returns a list of all user shared locks
@@ -31,7 +29,7 @@ final class SharedLocks extends Request implements SharedLocksInterface
      */
     public function get(SharedLockStatus $status = SharedLockStatus::active): object
     {
-        $this->getClient(self::LOCKS_SHARED_LOCKS, ['status' => $status]);
+        $this->getClient('', ['status' => $status]);
         return $this->getResponseContents(200);
     }
 
@@ -70,7 +68,7 @@ final class SharedLocks extends Request implements SharedLocksInterface
     public function create(array $body): object
     {
         $this->checkMandatory($body, 'Body');
-        $this->postClient(self::LOCKS_SHARED_LOCKS, $body);
+        $this->postClient('', $body);
         return $this->getResponseContents(201);
     }
 
@@ -90,7 +88,7 @@ final class SharedLocks extends Request implements SharedLocksInterface
     public function find(string $sharedLockId): object
     {
         $this->checkMandatory($sharedLockId, 'Shared lock ID');
-        $this->getClient(self::LOCKS_SHARED_LOCKS . '/' . $sharedLockId);
+        $this->getClient($sharedLockId);
         return $this->getResponseContents(200);
     }
 
@@ -121,7 +119,6 @@ final class SharedLocks extends Request implements SharedLocksInterface
      *      }
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
@@ -129,7 +126,7 @@ final class SharedLocks extends Request implements SharedLocksInterface
     {
         $this->checkMandatory($sharedLockId, 'Shared lock ID');
         $this->checkMandatory($body, 'Body');
-        $this->putClient(self::LOCKS_SHARED_LOCKS . '/' . $sharedLockId);
+        $this->putClient($sharedLockId);
         $this->checkResponseCode(200);
     }
 
@@ -140,14 +137,13 @@ final class SharedLocks extends Request implements SharedLocksInterface
      * @param string $sharedLockId Mandatory. The shared lock id
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
     public function archive(string $sharedLockId): void
     {
         $this->checkMandatory($sharedLockId, 'Shared lock ID');
-        $this->postClient(self::LOCKS_SHARED_LOCKS . '/' . $sharedLockId . '/archive');
+        $this->postClient($sharedLockId . '/archive');
         $this->checkResponseCode(201);
     }
 
@@ -170,7 +166,6 @@ final class SharedLocks extends Request implements SharedLocksInterface
      *      }
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
@@ -178,8 +173,12 @@ final class SharedLocks extends Request implements SharedLocksInterface
     {
         $this->checkMandatory($sharedLockId, 'Shared lock ID');
         $this->checkMandatory($body, 'Body');
-        $this->putClient(self::LOCKS_SHARED_LOCKS . '/' . $sharedLockId . '/extensions', $body);
+        $this->putClient($sharedLockId . '/extensions', $body);
         $this->checkResponseCode(200);
     }
 
+    public function getBaseRoute(): string
+    {
+        return 'locks/shared-locks';
+    }
 }

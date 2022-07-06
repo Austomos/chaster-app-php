@@ -1,13 +1,37 @@
 {
     "name": "austomos/chaster-app-php",
+    "description": "Chaster.app PHP API client - unofficial",
     "type": "library",
+    "authors": [
+        {
+            "name": "Ben Hyr",
+            "email": "52321971+Austomos@users.noreply.github.com",
+            "homepage": "https://github.com/austomos",
+            "role": "Maintener"
+        }
+    ],
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "ChasterApp\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "ChasterApp\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=8.1",
         "guzzlehttp/guzzle": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3"
+    },
+    "scripts": {
+        "check": "phpcs src --standard=PSR12 -sp",
+        "fix": "phpcbf src --standard=PSR12 -p",
+        "test": "phpunit tests"
     }
 }
