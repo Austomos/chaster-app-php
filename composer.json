@@ -1,6 +1,16 @@
 {
     "name": "austomos/chaster-app-php",
+    "description": "Chaster.app PHP API client - unofficial",
     "type": "library",
+    "authors": [
+        {
+            "name": "Ben Hyr",
+            "email": "52321971+Austomos@users.noreply.github.com",
+            "homepage": "https://github.com/austomos",
+            "role": "Maintener"
+        }
+    ],
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "ChasterApp\\": "src/"
