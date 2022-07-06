@@ -1,5 +1,6 @@
 {
     "name": "austomos/chaster-app-php",
+    "description": "Chaster.app PHP API client - unofficial",
     "type": "library",
     "authors": [
         {
