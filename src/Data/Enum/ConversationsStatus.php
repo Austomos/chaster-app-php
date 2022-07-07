@@ -2,9 +2,9 @@
 
 namespace ChasterApp\Data\Enum;
 
-enum ConversationsStatus
+enum ConversationsStatus: string
 {
-    case pending;
-    case approved;
-    case ignored;
+    case pending = 'pending';
+    case approved = 'approved';
+    case ignored = 'ignored';
 }
