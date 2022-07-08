@@ -2,24 +2,32 @@
 
 namespace ChasterApp\Api;
 
-use ChasterApp\Exception\{
-    InvalidArgumentChasterException,
-    RequestChasterException
-};
+use ChasterApp\Exception\{InvalidArgumentChasterException,
+    JsonChasterException,
+    RequestChasterException,
+    ResponseChasterException};
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 
-abstract class Request extends Response
+abstract class Request
 {
     private const BASE_URI = 'https://api.chaster.app';
-    private string $token;
+    protected Client $client;
+    private ResponseInterface $response;
 
     /**
      * @param string $token
      */
     public function __construct(string $token)
     {
-        $this->token = $token;
+        $this->client = new Client([
+            'base_uri' => self::BASE_URI,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Content-Type' => 'application/json'
+            ]
+        ]);
     }
 
     /**
@@ -109,30 +117,35 @@ abstract class Request extends Response
      */
     protected function client(string $method, string $uri, array $options = []): void
     {
-        $options['headers']['Authorization'] = 'Bearer ' . $this->token();
-        $client = new Client([
-            'base_uri' => self::BASE_URI,
-        ]);
-
         try {
-            $this->setResponse($client->request($method, $this->getRoute($uri), $options));
+            $this->response = $this->client->request($method, $this->getRoute($uri), $options);
         } catch (GuzzleException $e) {
             throw new RequestChasterException('Request failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
     }
 
     /**
-     * @return string
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
-    public function token(): string
+    protected function response(string $exceptionMessage, int $expectedStatusCode): ResponseInterface
     {
-        return $this->token;
+        $response = new Response($this->response);
+        if ($response->getStatusCode() !== $expectedStatusCode) {
+            throw new ResponseChasterException(
+                $response->getReasonPhrase(),
+                $response->getStatusCode(),
+                'Response error -> ' . $exceptionMessage . ': response code: ' . $response->getStatusCode()
+                . ' - reason: ' . $response->getReasonPhrase()
+            );
+        }
+        return $response;
     }
 
     /**
+     * Check if the response is successful
      * @throws InvalidArgumentChasterException
      */
-    protected function checkMandatory(mixed $value, string $name): void
+    protected function checkMandatoryArgument(mixed $value, string $name): void
     {
         if (empty($value)) {
             throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);

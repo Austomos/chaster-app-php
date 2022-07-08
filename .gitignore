@@ -1,5 +1,9 @@
 # IDE
-/.idea
+.idea/
 
 # Vendor
-/vendor/
+vendor/
+
+# PHPUnit
+coverage-html/
+.phpunit.result.cache

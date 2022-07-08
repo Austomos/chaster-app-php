@@ -3,69 +3,34 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Exception\JsonChasterException;
-use ChasterApp\Exception\ResponseChasterException;
 use JsonException;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class Response
+class Response extends \GuzzleHttp\Psr7\Response
 {
-    private ResponseInterface $response;
-
-    protected function setResponse(ResponseInterface $response): void
-    {
-        $this->response = $response;
-    }
-
     /**
-     * @return string
+     * @param ResponseInterface $response
      */
-    protected function getReasonPhrase(): string
+    public function __construct(ResponseInterface $response)
     {
-        return $this->response->getReasonPhrase();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getStatusCode(): int
-    {
-        return $this->response->getStatusCode();
+        parent::__construct(
+            $response->getStatusCode(),
+            $response->getHeaders(),
+            $response->getBody(),
+            $response->getProtocolVersion(),
+            $response->getReasonPhrase()
+        );
     }
 
     /**
      * @throws JsonChasterException
      */
-    protected function getContents(): object
+    public function getBodyObject(): object
     {
         try {
-            return (object) json_decode($this->response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            return (object) json_decode($this->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new JsonChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * @throws ResponseChasterException
-     * @throws JsonChasterException
-     */
-    protected function getResponseContents(int $expectedCode): object
-    {
-        $this->checkResponseCode($expectedCode);
-        return $this->getContents();
-    }
-
-    /**
-     * @throws ResponseChasterException
-     */
-    protected function checkResponseCode(int $expectedCode): void
-    {
-        if ($this->getStatusCode() !== $expectedCode) {
-            throw new ResponseChasterException(
-                $this->getReasonPhrase(),
-                $this->getStatusCode(),
-                'Response failed, code expected: ' . $expectedCode . ', response code: ' . $this->getStatusCode()
-                . ', reason: ' . $this->getReasonPhrase()
-            );
         }
     }
 }

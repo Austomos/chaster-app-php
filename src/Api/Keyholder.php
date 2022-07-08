@@ -43,7 +43,7 @@ class Keyholder extends Request implements KeyholderInterface
      */
     public function search(array $body): object
     {
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient('locks/search', $body);
         return $this->getResponseContents(201);
     }

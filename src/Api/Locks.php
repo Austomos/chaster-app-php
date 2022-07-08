@@ -60,8 +60,8 @@ class Locks extends Request implements LocksInterface
      */
     public function updateTime(string $lockId, array $body): void
     {
-        $this->checkMandatory($lockId, 'Lock ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($lockId, 'Lock ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($lockId . '/update-time', $body);
         $this->checkResponseCode(204);
     }
@@ -84,8 +84,8 @@ class Locks extends Request implements LocksInterface
      */
     public function freeze(string $lockId, array $body): void
     {
-        $this->checkMandatory($lockId, 'Lock ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($lockId, 'Lock ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($lockId . '/freeze', $body);
         $this->checkResponseCode(204);
     }

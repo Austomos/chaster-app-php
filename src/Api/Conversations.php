@@ -35,7 +35,7 @@ class Conversations extends Request implements ConversationsInterface
         DateTime|string $offset = ''
     ): object {
         $query['limit'] = $limit;
-        $query['status'] = $status->name;
+        $query['status'] = $status->value;
         if (isset($offset)) {
             $query['offset'] = match (true) {
                 is_string($offset) => $offset,
@@ -43,7 +43,7 @@ class Conversations extends Request implements ConversationsInterface
             };
         }
         $this->getClient('', $query);
-        return $this->getResponseContents(200);
+        return $this->response('get conversation', 200);
     }
 
 
@@ -71,7 +71,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function create(array $body): object
     {
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient('', $body);
         return $this->getResponseContents(201);
     }
@@ -91,7 +91,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function byUser(string $userId): object
     {
-        $this->checkMandatory($userId, 'User ID');
+        $this->checkMandatoryArgument($userId, 'User ID');
         $this->getClient('by-user/' . $userId);
         return $this->getResponseContents(200);
     }
@@ -118,8 +118,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function send(string $conversationId, array $body): object
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($conversationId, $body);
         return $this->getResponseContents(201);
     }
@@ -139,7 +139,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function find(string $conversationId): object
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
         $this->getClient($conversationId);
         return $this->getResponseContents(200);
     }
@@ -160,8 +160,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function status(string $conversationId, array $body): void
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->putClient($conversationId . '/status');
         $this->checkResponseCode(200);
     }
@@ -182,8 +182,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function unread(string $conversationId, array $body): void
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->putClient($conversationId . '/unread');
         $this->checkResponseCode(200);
     }
@@ -205,7 +205,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function messages(string $conversationId, int $limit = 50, ?string $lastId = null): object
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
         $query['limit'] = $limit;
         if (isset($lastId)) {
             $query['lastId'] = $lastId;

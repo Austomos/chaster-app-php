@@ -67,7 +67,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      */
     public function create(array $body): object
     {
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient('', $body);
         return $this->getResponseContents(201);
     }
@@ -87,7 +87,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      */
     public function find(string $sharedLockId): object
     {
-        $this->checkMandatory($sharedLockId, 'Shared lock ID');
+        $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
         $this->getClient($sharedLockId);
         return $this->getResponseContents(200);
     }
@@ -124,8 +124,8 @@ class SharedLocks extends Request implements SharedLocksInterface
      */
     public function update(string $sharedLockId, array $body): void
     {
-        $this->checkMandatory($sharedLockId, 'Shared lock ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->putClient($sharedLockId);
         $this->checkResponseCode(200);
     }
@@ -142,7 +142,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      */
     public function archive(string $sharedLockId): void
     {
-        $this->checkMandatory($sharedLockId, 'Shared lock ID');
+        $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
         $this->postClient($sharedLockId . '/archive');
         $this->checkResponseCode(201);
     }
@@ -171,8 +171,8 @@ class SharedLocks extends Request implements SharedLocksInterface
      */
     public function extensions(string $sharedLockId, array $body): void
     {
-        $this->checkMandatory($sharedLockId, 'Shared lock ID');
-        $this->checkMandatory($body, 'Body');
+        $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
+        $this->checkMandatoryArgument($body, 'Body');
         $this->putClient($sharedLockId . '/extensions', $body);
         $this->checkResponseCode(200);
     }
