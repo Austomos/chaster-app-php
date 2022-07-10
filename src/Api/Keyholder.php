@@ -3,7 +3,6 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Exception\InvalidArgumentChasterException;
-use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
@@ -37,7 +36,6 @@ class Keyholder extends Request implements KeyholderInterface
      * @return object
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
@@ -45,6 +43,6 @@ class Keyholder extends Request implements KeyholderInterface
     {
         $this->checkMandatoryArgument($body, 'Body');
         $this->postClient('locks/search', $body);
-        return $this->getResponseContents(201);
+        return $this->response(201);
     }
 }

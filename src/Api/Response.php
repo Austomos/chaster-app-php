@@ -3,15 +3,15 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Exception\JsonChasterException;
+use ChasterApp\Interfaces\ResponseInterface;
 use JsonException;
-use Psr\Http\Message\ResponseInterface;
 
-class Response extends \GuzzleHttp\Psr7\Response
+class Response extends \GuzzleHttp\Psr7\Response implements ResponseInterface
 {
     /**
-     * @param ResponseInterface $response
+     * @param \Psr\Http\Message\ResponseInterface $response
      */
-    public function __construct(ResponseInterface $response)
+    public function __construct(\Psr\Http\Message\ResponseInterface $response)
     {
         parent::__construct(
             $response->getStatusCode(),

@@ -3,6 +3,7 @@
 namespace ChasterApp\Interfaces\Api;
 
 use ChasterApp\Data\Enum\ConversationsStatus;
+use ChasterApp\Interfaces\ResponseInterface;
 use DateTime;
 
 interface ConversationsInterface
@@ -11,12 +12,12 @@ interface ConversationsInterface
         int $limit = 50,
         ConversationsStatus $status = ConversationsStatus::approved,
         string|DateTime $offset = ''
-    ): object;
-    public function create(array $body): object;
-    public function byUser(string $userId): object;
-    public function send(string $conversationId, array $body): object;
-    public function find(string $conversationId): object;
-    public function status(string $conversationId, array $body): void;
-    public function unread(string $conversationId, array $body): void;
-    public function messages(string $conversationId, int $limit = 50, ?string $lastId = null): object;
+    ): ResponseInterface;
+    public function create(array $body): ResponseInterface;
+    public function byUser(string $userId): ResponseInterface;
+    public function send(string $conversationId, array $body): ResponseInterface;
+    public function find(string $conversationId): ResponseInterface;
+    public function status(string $conversationId, array $body): ResponseInterface;
+    public function unread(string $conversationId, array $body): ResponseInterface;
+    public function messages(string $conversationId, int $limit = 50, ?string $lastId = null): ResponseInterface;
 }

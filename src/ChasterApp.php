@@ -3,6 +3,7 @@
 namespace ChasterApp;
 
 use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Interfaces\Api\KeyholderInterface;
 use ChasterApp\Interfaces\ChasterFactoryInterface;
 use ChasterApp\Api\{Conversations, Files, Keyholder, Locks, SharedLocks, Util};
 use JetBrains\PhpStorm\Pure;
@@ -53,9 +54,9 @@ class ChasterApp implements ChasterFactoryInterface
 
     /**
      * Keyholder routes
-     * @return Keyholder
+     * @return KeyholderInterface
      */
-    #[Pure] public function keyholder(): Keyholder
+    public function keyholder(): KeyholderInterface
     {
         return new Keyholder($this->token());
     }
