@@ -2,19 +2,23 @@
 
 namespace ChasterApp\Interfaces;
 
-use ChasterApp\Api\Conversations;
-use ChasterApp\Api\Files;
-use ChasterApp\Api\Keyholder;
-use ChasterApp\Api\Locks;
-use ChasterApp\Api\SharedLocks;
+use ChasterApp\Interfaces\Api\ConversationsInterface;
+use ChasterApp\Interfaces\Api\FilesInterface;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
+use ChasterApp\Interfaces\Api\LocksInterface;
+use ChasterApp\Interfaces\Api\SharedLocksInterface;
 
 interface ChasterFactoryInterface
 {
-    public function __construct(string $accessToken);
-    public function conversations(): Conversations;
-    public function files(): Files;
+    public function conversations(): ConversationsInterface;
+
+    public function files(): FilesInterface;
+
     public function keyholder(): KeyholderInterface;
-    public function locks(): Locks;
-    public function sharedLocks(): SharedLocks;
+
+    public function locks(): LocksInterface;
+
+    public function sharedLocks(): SharedLocksInterface;
+
+    public function __construct(string $accessToken);
 }

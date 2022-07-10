@@ -2,7 +2,9 @@
 
 namespace ChasterApp\Api;
 
-class Files extends Request
+use ChasterApp\Interfaces\Api\FilesInterface;
+
+class Files extends Request implements FilesInterface
 {
     public function upload(): array|object
     {
