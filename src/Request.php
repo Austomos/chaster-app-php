@@ -1,10 +1,11 @@
 <?php
 
-namespace ChasterApp\Api;
+namespace ChasterApp;
 
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
+use ChasterApp\Interfaces\ClientOptionsInterface;
 use ChasterApp\Interfaces\RequestInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use GuzzleHttp\Client;
@@ -33,7 +34,7 @@ abstract class Request implements RequestInterface
     /**
      * @throws RequestChasterException
      */
-    public function getClient(string $uri, ?array $query = null, array $options = []): void
+    public function getClient(string $uri, ?array $query = null, array|ClientOptionsInterface $options = []): void
     {
         if (!empty($query)) {
             $options['query'] = $query;
@@ -42,15 +43,26 @@ abstract class Request implements RequestInterface
     }
 
     /**
+     * @throws \ChasterApp\Exception\RequestChasterException
+     */
+    public function patchClient(string $uri, ?array $query = null, array|ClientOptionsInterface $options = []): void
+    {
+        $this->client('PATCH', $uri, $options);
+    }
+
+    /**
      * @param string $method
      * @param string $uri
-     * @param array $options
+     * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
-     * @throws RequestChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function client(string $method, string $uri, array $options = []): void
+    public function client(string $method, string $uri, array|ClientOptionsInterface $options = []): void
     {
         $route = $this->getRoute($uri);
+        if ($options instanceof ClientOptionsInterface) {
+            $options = $options->getOptions();
+        }
         try {
             $this->response = $this->client->request($method, $route, $options);
         } catch (GuzzleException $e) {
@@ -102,11 +114,11 @@ abstract class Request implements RequestInterface
     /**
      * @param string $uri URI specific of the call
      * @param array|null $body Array
-     * @param array $options
+     * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
-     * @throws RequestChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function postClient(string $uri, ?array $body = null, array $options = []): void
+    public function postClient(string $uri, ?array $body = null, array|ClientOptionsInterface $options = []): void
     {
         if (!empty($body)) {
             $options['json'] = $body;

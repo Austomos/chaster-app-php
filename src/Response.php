@@ -1,6 +1,6 @@
 <?php
 
-namespace ChasterApp\Api;
+namespace ChasterApp;
 
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Interfaces\ResponseInterface;
