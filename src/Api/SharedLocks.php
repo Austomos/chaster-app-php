@@ -8,9 +8,9 @@ use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\SharedLocksInterface;
+use ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
-use ChasterApp\RequestBody\SharedLocks\CreateSharedLock;
 
 class SharedLocks extends Request implements SharedLocksInterface
 {
@@ -39,7 +39,8 @@ class SharedLocks extends Request implements SharedLocksInterface
      * Create a shared lock
      * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockController_create
      *
-     * @param array|\ChasterApp\RequestBody\SharedLocks\CreateSharedLock $body Mandatory. Array with body parameters
+     * @param array|\ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface $body
+     * Mandatory. Array with body parameters
      *
      *      [
      *          'minDuration': 0,
@@ -66,9 +67,9 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
      */
-    public function create(array|CreateSharedLock $body): ResponseInterface
+    public function create(array|CreateSharedLockInterface $body): ResponseInterface
     {
-        $body = $body instanceof CreateSharedLock ? $body->getArrayCopy() : $body;
+        $body = $body instanceof CreateSharedLockInterface ? $body->getArrayCopy() : $body;
         $this->checkMandatoryArgument($body, 'Body');
         $this->postClient('locks/shared-locks', options: new ClientOptions(json: $body));
         return $this->response(201);
@@ -89,7 +90,7 @@ class SharedLocks extends Request implements SharedLocksInterface
     public function find(string $sharedLockId): ResponseInterface
     {
         $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
-        $this->getClient('locks/shared-locks' . $sharedLockId);
+        $this->getClient('locks/shared-locks/' . $sharedLockId);
         return $this->response(200);
     }
 
@@ -123,11 +124,12 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function update(string $sharedLockId, array $body): ResponseInterface
+    public function update(string $sharedLockId, array|CreateSharedLockInterface $body): ResponseInterface
     {
+        $body = $body instanceof CreateSharedLockInterface ? $body->getArrayCopy() : $body;
         $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
         $this->checkMandatoryArgument($body, 'Body');
-        $this->putClient('locks/shared-locks' . $sharedLockId);
+        $this->putClient('locks/shared-locks' . $sharedLockId, options: new ClientOptions(json: $body));
         return $this->response(200);
     }
 
@@ -215,6 +217,11 @@ class SharedLocks extends Request implements SharedLocksInterface
         return $this->response(200);
     }
 
+    /**
+     * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     */
     public function removeFavorite(string $sharedLockId): ResponseInterface
     {
         $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');

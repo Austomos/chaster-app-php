@@ -129,11 +129,11 @@ abstract class Request implements RequestInterface
     /**
      * @param string $uri
      * @param array|null $body
-     * @param array $options
+     * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
-     * @throws RequestChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function putClient(string $uri, ?array $body = null, array $options = []): void
+    public function putClient(string $uri, ?array $body = null, array|ClientOptionsInterface $options = []): void
     {
         if (!empty($body)) {
             $options['json'] = $body;
@@ -144,11 +144,11 @@ abstract class Request implements RequestInterface
     /**
      * @param string $uri
      * @param array|null $body
-     * @param array $options
+     * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
-     * @throws RequestChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function deleteClient(string $uri, ?array $body = null, array $options = []): void
+    public function deleteClient(string $uri, ?array $body = null, array|ClientOptionsInterface $options = []): void
     {
         if (!empty($body)) {
             $options['json'] = $body;
@@ -162,8 +162,7 @@ abstract class Request implements RequestInterface
     public function response(int $expectedStatusCode): ResponseInterface
     {
         $response = new Response($this->response);
-        if (
-            $expectedStatusCode >= 100
+        if ($expectedStatusCode >= 100
             && $expectedStatusCode < 600
             && $response->getStatusCode() !== $expectedStatusCode
         ) {
