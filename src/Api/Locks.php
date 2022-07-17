@@ -37,7 +37,7 @@ class Locks extends Request implements LocksInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function locks(LocksStatus $status = LocksStatus::active): object
+    public function locks(LocksStatus $status = LocksStatus::active): ResponseInterface
     {
         $this->getClient('', ['status' => $status->name]);
         return $this->getResponseContents(200);
@@ -59,7 +59,7 @@ class Locks extends Request implements LocksInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function updateTime(string $lockId, array $body): void
+    public function updateTime(string $lockId, array $body): ResponseInterface
     {
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');
@@ -83,7 +83,7 @@ class Locks extends Request implements LocksInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function freeze(string $lockId, array $body): void
+    public function freeze(string $lockId, array $body): ResponseInterface
     {
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');

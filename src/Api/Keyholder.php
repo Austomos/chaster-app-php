@@ -41,7 +41,7 @@ class Keyholder extends Request implements KeyholderInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function search(array $body): object
+    public function search(array $body): ResponseInterface
     {
         $this->checkMandatoryArgument($body, 'Body');
         $this->postClient('locks/search', $body);

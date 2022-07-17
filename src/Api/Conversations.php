@@ -2,6 +2,7 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\ConversationsStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
@@ -34,15 +35,18 @@ class Conversations extends Request implements ConversationsInterface
         ConversationsStatus $status = ConversationsStatus::approved,
         DateTime|string $offset = ''
     ): ResponseInterface {
-        $query['limit'] = $limit;
-        $query['status'] = $status->value;
-        if (isset($offset)) {
-            $query['offset'] = match (true) {
+        if (!empty($offset)) {
+            $offset = match (true) {
                 is_string($offset) => $offset,
                 $offset instanceof DateTime => $offset->format('Y-m-d\TH:i:s.v\Z')
             };
         }
-        $this->getClient('', $query);
+        $options = new ClientOptions(query: [
+            'limit' => $limit,
+            'status' => $status,
+            'offset' => $offset,
+        ]);
+        $this->getClient('', options: $options);
         return $this->response(200);
     }
 
@@ -71,7 +75,8 @@ class Conversations extends Request implements ConversationsInterface
     public function create(array $body): ResponseInterface
     {
         $this->checkMandatoryArgument($body, 'Body');
-        $this->postClient('', $body);
+        $options = new ClientOptions(json: $body);
+        $this->postClient('', options: $options);
         return $this->response(201);
     }
 
