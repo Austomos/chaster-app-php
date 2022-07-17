@@ -2,6 +2,7 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\SharedLockStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
@@ -69,7 +70,7 @@ class SharedLocks extends Request implements SharedLocksInterface
     {
         $body = $body instanceof CreateSharedLock ? $body->getArrayCopy() : $body;
         $this->checkMandatoryArgument($body, 'Body');
-        $this->postClient('locks/shared-locks', $body);
+        $this->postClient('locks/shared-locks', options: new ClientOptions(json: $body));
         return $this->response(201);
     }
 
@@ -225,5 +226,4 @@ class SharedLocks extends Request implements SharedLocksInterface
     {
         // TODO: Implement getFavorites() method.
     }
-
 }

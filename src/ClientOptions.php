@@ -95,5 +95,4 @@ class ClientOptions extends ArrayObject implements ClientOptionsInterface
             'query' => $this->query->getArrayCopy(),
         ];
     }
-
 }

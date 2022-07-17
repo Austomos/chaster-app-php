@@ -12,7 +12,6 @@ use DateTime;
  */
 class CreateSharedLock extends ArrayObject implements CreateSharedLockInterface
 {
-
     public function setDescription(string $description): CreateSharedLockInterface
     {
         $this->offsetSet('description', $description);
