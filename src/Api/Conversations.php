@@ -8,6 +8,7 @@ use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\ConversationsInterface;
 use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 use DateTime;
 
 class Conversations extends Request implements ConversationsInterface

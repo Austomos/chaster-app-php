@@ -5,11 +5,12 @@ namespace ChasterApp\Api;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
+use ChasterApp\Interfaces\RequestInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-abstract class Request
+abstract class Request implements RequestInterface
 {
     private const BASE_URI = 'https://api.chaster.app';
     protected Client $client;
@@ -32,7 +33,7 @@ abstract class Request
     /**
      * @throws RequestChasterException
      */
-    protected function getClient(string $uri, ?array $query = null, array $options = []): void
+    public function getClient(string $uri, ?array $query = null, array $options = []): void
     {
         if (!empty($query)) {
             $options['query'] = $query;
@@ -47,7 +48,7 @@ abstract class Request
      *
      * @throws RequestChasterException
      */
-    protected function client(string $method, string $uri, array $options = []): void
+    public function client(string $method, string $uri, array $options = []): void
     {
         $route = $this->getRoute($uri);
         try {
@@ -105,7 +106,7 @@ abstract class Request
      *
      * @throws RequestChasterException
      */
-    protected function postClient(string $uri, ?array $body = null, array $options = []): void
+    public function postClient(string $uri, ?array $body = null, array $options = []): void
     {
         if (!empty($body)) {
             $options['json'] = $body;
@@ -120,7 +121,7 @@ abstract class Request
      *
      * @throws RequestChasterException
      */
-    protected function putClient(string $uri, ?array $body = null, array $options = []): void
+    public function putClient(string $uri, ?array $body = null, array $options = []): void
     {
         if (!empty($body)) {
             $options['json'] = $body;
@@ -129,12 +130,30 @@ abstract class Request
     }
 
     /**
+     * @param string $uri
+     * @param array|null $body
+     * @param array $options
+     *
+     * @throws RequestChasterException
+     */
+    public function deleteClient(string $uri, ?array $body = null, array $options = []): void
+    {
+        if (!empty($body)) {
+            $options['json'] = $body;
+        }
+        $this->client('DELETE', $uri, $options);
+    }
+
+    /**
      * @throws \ChasterApp\Exception\ResponseChasterException
      */
-    protected function response(int $expectedStatusCode): ResponseInterface
+    public function response(int $expectedStatusCode): ResponseInterface
     {
         $response = new Response($this->response);
-        if ($expectedStatusCode >= 100 && $expectedStatusCode < 600 && $response->getStatusCode() !== $expectedStatusCode) {
+        if ($expectedStatusCode >= 100
+            && $expectedStatusCode < 600
+            && $response->getStatusCode() !== $expectedStatusCode
+        ) {
             throw new ResponseChasterException(
                 $response->getReasonPhrase(),
                 $response->getStatusCode(),
@@ -147,9 +166,9 @@ abstract class Request
      * Check if the response is successful
      * @throws InvalidArgumentChasterException
      */
-    protected function checkMandatoryArgument(mixed $value, string $name): void
+    public function checkMandatoryArgument(mixed $value, string $name): void
     {
-        if (empty($value)) {
+        if (isset($value)) {
             throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
         }
     }

@@ -6,9 +6,10 @@ use ChasterApp\Data\Enum\LocksStatus;
 use ChasterApp\Exception\{InvalidArgumentChasterException,
     JsonChasterException,
     RequestChasterException,
-    ResponseChasterException,
-};
+    ResponseChasterException,};
 use ChasterApp\Interfaces\Api\LocksInterface;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 use ChasterApp\Utils\Utils;
 
 class Locks extends Request implements LocksInterface

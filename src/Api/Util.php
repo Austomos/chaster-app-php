@@ -4,6 +4,8 @@ namespace ChasterApp\Api;
 
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 
 class Util extends Request
 {

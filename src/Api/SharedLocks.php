@@ -4,10 +4,12 @@ namespace ChasterApp\Api;
 
 use ChasterApp\Data\Enum\SharedLockStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
-use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\SharedLocksInterface;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
+use ChasterApp\RequestBody\SharedLocks\CreateSharedLock;
 
 class SharedLocks extends Request implements SharedLocksInterface
 {

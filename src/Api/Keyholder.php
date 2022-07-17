@@ -6,6 +6,8 @@ use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 
 class Keyholder extends Request implements KeyholderInterface
 {

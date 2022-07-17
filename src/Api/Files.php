@@ -3,10 +3,12 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Interfaces\Api\FilesInterface;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 
 class Files extends Request implements FilesInterface
 {
-    public function upload(): array|object
+    public function upload(): ResponseInterface
     {
         return [];
     }
