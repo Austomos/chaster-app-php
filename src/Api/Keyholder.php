@@ -2,9 +2,6 @@
 
 namespace ChasterApp\Api;
 
-use ChasterApp\Exception\InvalidArgumentChasterException;
-use ChasterApp\Exception\RequestChasterException;
-use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
@@ -35,11 +32,11 @@ class Keyholder extends Request implements KeyholderInterface
      *          'limit': 0
      *      }
      *
-     * @return object
+     * @return \ChasterApp\Interfaces\ResponseInterface
      *
-     * @throws InvalidArgumentChasterException
-     * @throws RequestChasterException
-     * @throws ResponseChasterException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function search(array $body): ResponseInterface
     {

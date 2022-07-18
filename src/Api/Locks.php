@@ -31,16 +31,15 @@ class Locks extends Request implements LocksInterface
      *                              Available values : active, archived, all
      *                              Default value : active
      *
-     * @return object
+     * @return \ChasterApp\Interfaces\ResponseInterface
      *
-     * @throws JsonChasterException
-     * @throws RequestChasterException
-     * @throws ResponseChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function locks(LocksStatus $status = LocksStatus::active): ResponseInterface
     {
         $this->getClient('', ['status' => $status->name]);
-        return $this->getResponseContents(200);
+        return $this->response(200);
     }
 
     /**
@@ -64,7 +63,7 @@ class Locks extends Request implements LocksInterface
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($lockId . '/update-time', $body);
-        $this->checkResponseCode(204);
+        return $this->response(204);
     }
 
     /**
@@ -83,11 +82,11 @@ class Locks extends Request implements LocksInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function freeze(string $lockId, array $body): ResponseInterface
+    public function freeze(string $lockId, array|LockFrozen $body): ResponseInterface
     {
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($lockId . '/freeze', $body);
-        $this->checkResponseCode(204);
+        return $this->response(204);
     }
 }
