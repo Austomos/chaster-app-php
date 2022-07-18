@@ -99,7 +99,9 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockController_update
      *
      * @param string $sharedLockId Mandatory. The shared lock id
-     * @param array $body Mandatory. Array with body parameters
+     *
+     * @param array|\ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface $body Mandatory
+     * Array with body parameters
      *
      *      {
      *          'minDuration': 0,
@@ -120,9 +122,10 @@ class SharedLocks extends Request implements SharedLocksInterface
      *          'hideTimeLogs': true
      *      }
      *
-     * @throws InvalidArgumentChasterException
-     * @throws RequestChasterException
-     * @throws ResponseChasterException
+     * @return \ChasterApp\Interfaces\ResponseInterface
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function update(string $sharedLockId, array|CreateSharedLockInterface $body): ResponseInterface
     {
@@ -194,9 +197,19 @@ class SharedLocks extends Request implements SharedLocksInterface
     }
 
     /**
-     * @throws \ChasterApp\Exception\ResponseChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * Check if the shared lock is in user favorites
+     * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockFavoriteController_isFavorite
+     *
+     * @param string $sharedLockId The shared lock id
+     *
+     * @return \ChasterApp\Interfaces\ResponseInterface
+     *  {
+     *      'favorite': true
+     *  }
+     *
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function isFavorite(string $sharedLockId): ResponseInterface
     {
@@ -206,9 +219,16 @@ class SharedLocks extends Request implements SharedLocksInterface
     }
 
     /**
-     * @throws \ChasterApp\Exception\ResponseChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * Set a shared lock as favorite
+     * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockFavoriteController_setFavorite
+     *
+     * @param string $sharedLockId The shared lock id
+     *
+     * @return \ChasterApp\Interfaces\ResponseInterface
+     *
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function addFavorite(string $sharedLockId): ResponseInterface
     {
@@ -218,9 +238,16 @@ class SharedLocks extends Request implements SharedLocksInterface
     }
 
     /**
-     * @throws \ChasterApp\Exception\ResponseChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     * Remove a favorite shared lock
+     * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockFavoriteController_removeFavorite
+     *
+     * @param string $sharedLockId The shared lock id
+     *
+     * @return \ChasterApp\Interfaces\ResponseInterface
+     *
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function removeFavorite(string $sharedLockId): ResponseInterface
     {
@@ -229,8 +256,35 @@ class SharedLocks extends Request implements SharedLocksInterface
         return $this->response(200);
     }
 
-    public function getFavorites(array $body): ResponseInterface
+    /**
+     * Get user favorite shared locks
+     * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockFavoritesController_getFavoriteSharedLocks
+     *
+     * @param int $limit Mandatory. The limit of favorite shared locks.
+     * default: 15
+     * minimum: 0
+     * maximum: 100
+     * @param string|null $lastId Optional. The last id of shared lock
+     *
+     * @return \ChasterApp\Interfaces\ResponseInterface
+     *
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
+     */
+    public function getFavorites(int $limit = 15, ?string $lastId = null): ResponseInterface
     {
-        // TODO: Implement getFavorites() method.
+        $this->checkMandatoryArgument($limit, 'Limit of favorites');
+        if ($limit > 100) {
+            throw new InvalidArgumentChasterException('Limit of favorites must be less than 100');
+        }
+        if ($limit < 1) {
+            throw new InvalidArgumentChasterException('Limit of favorites must be greater than 0');
+        }
+        $this->postClient('/favorites/shared-locks', options: new ClientOptions(json: [
+            'limit' => $limit,
+            'lastId' => $lastId
+        ]));
+        return $this->response(201);
     }
 }
