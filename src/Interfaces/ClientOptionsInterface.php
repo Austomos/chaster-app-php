@@ -5,6 +5,7 @@ namespace ChasterApp\Interfaces;
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
+use Psr\Http\Message\StreamInterface;
 use Serializable;
 
 interface ClientOptionsInterface extends IteratorAggregate, ArrayAccess, Serializable, Countable

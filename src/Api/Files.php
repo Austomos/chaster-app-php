@@ -5,11 +5,9 @@ namespace ChasterApp\Api;
 use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\StorageFileType;
 use ChasterApp\Interfaces\Api\FilesInterface;
-use ChasterApp\Interfaces\ClientOptionsInterface;
 use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
-use ChasterApp\RequestBody\Files\UploadFiles;
 
 class Files extends Request implements FilesInterface
 {

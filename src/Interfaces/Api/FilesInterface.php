@@ -3,8 +3,8 @@
 namespace ChasterApp\Interfaces\Api;
 
 use ChasterApp\Data\Enum\StorageFileType;
+use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
 use ChasterApp\Interfaces\ResponseInterface;
-use ChasterApp\RequestBody\Files\UploadFiles;
 
 interface FilesInterface
 {
@@ -24,13 +24,13 @@ interface FilesInterface
      * The attachment token expires after one hour.
      * @link https://api.chaster.app/api/#/Files/StorageController_uploadFiles
      *
-     * @param array|\ChasterApp\RequestBody\Files\UploadFiles $files
-     * @param string|\ChasterApp\Data\Enum\StorageFileType $type
+     * @param \ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface|array $files Mandatory. The files to upload.
+     * @param string|\ChasterApp\Data\Enum\StorageFileType $type Mandatory. The target storage
      *
      * @return \ChasterApp\Interfaces\ResponseInterface
      */
     public function upload(
-        array|UploadFiles $files,
+        array|UploadFilesInterface $files,
         string|StorageFileType $type = StorageFileType::messaging
     ): ResponseInterface;
 }
