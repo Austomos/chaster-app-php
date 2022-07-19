@@ -184,4 +184,26 @@ abstract class Request implements RequestInterface
             throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
         }
     }
+
+    /**
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     */
+    public function isNotEmptyMandatoryArgument(mixed $value, string $name): bool
+    {
+        if (empty($value)) {
+            throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory, can\'t be empty', 400);
+        }
+        return true;
+    }
+
+    /**
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     */
+    public function issetMandatoryArgument(mixed $value, string $name): bool
+    {
+        if (empty($value)) {
+            throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
+        }
+        return true;
+    }
 }
