@@ -3,7 +3,7 @@
 namespace ChasterApp\Interfaces\Api;
 
 use ChasterApp\Data\Enum\SharedLockStatus;
-use ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface;
+use ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 
 interface SharedLocksInterface
@@ -29,7 +29,7 @@ interface SharedLocksInterface
      * Create a shared lock
      * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockController_create
      *
-     * @param array|\ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface $body
+     * @param array|\ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface $body
      * Mandatory. Array with body parameters
      *
      *      [
@@ -143,7 +143,7 @@ interface SharedLocksInterface
      * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockController_update
      *
      * @param string $sharedLockId Mandatory. The shared lock id
-     * @param array|\ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface $body Mandatory
+     * @param array|\ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface $body Mandatory
      * Array with body parameters
      *
      *      {

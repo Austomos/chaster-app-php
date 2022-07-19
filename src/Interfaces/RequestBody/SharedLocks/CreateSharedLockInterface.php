@@ -1,6 +1,6 @@
 <?php
 
-namespace ChasterApp\Interfaces\RequestBody;
+namespace ChasterApp\Interfaces\RequestBody\SharedLocks;
 
 use DateTime;
 

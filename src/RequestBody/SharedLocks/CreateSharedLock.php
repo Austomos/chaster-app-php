@@ -3,7 +3,7 @@
 namespace ChasterApp\RequestBody\SharedLocks;
 
 use ArrayObject;
-use ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface;
+use ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface;
 use DateTime;
 
 /**
