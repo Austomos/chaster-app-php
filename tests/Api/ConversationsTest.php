@@ -5,7 +5,6 @@ namespace Api;
 use ChasterApp\Api\Conversations;
 use ChasterApp\Data\Enum\ConversationsStatus;
 use ChasterApp\Exception\RequestChasterException;
-use ChasterApp\Exception\ResponseChasterException;
 use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
