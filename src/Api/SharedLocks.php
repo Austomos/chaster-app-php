@@ -8,7 +8,7 @@ use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\SharedLocksInterface;
-use ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface;
+use ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
 
@@ -39,7 +39,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * Create a shared lock
      * @link https://api.chaster.app/api/#/Shared%20Locks/SharedLockController_create
      *
-     * @param array|\ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface $body
+     * @param array|\ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface $body
      * Mandatory. Array with body parameters
      *
      *      [
@@ -100,7 +100,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      *
      * @param string $sharedLockId Mandatory. The shared lock id
      *
-     * @param array|\ChasterApp\Interfaces\RequestBody\CreateSharedLockInterface $body Mandatory
+     * @param array|\ChasterApp\Interfaces\RequestBody\SharedLocks\CreateSharedLockInterface $body Mandatory
      * Array with body parameters
      *
      *      {
