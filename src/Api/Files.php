@@ -34,7 +34,7 @@ class Files extends Request implements FilesInterface
      */
     public function find(string $fileKey): ResponseInterface
     {
-        $this->checkMandatoryArgument($fileKey, 'File key');
+        $this->isNotEmptyMandatoryArgument($fileKey, 'File key');
         $this->getClient('/' . $fileKey);
         return $this->response(201);
     }
