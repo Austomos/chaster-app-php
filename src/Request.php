@@ -180,7 +180,7 @@ abstract class Request implements RequestInterface
      */
     public function checkMandatoryArgument(mixed $value, string $name): void
     {
-        if (isset($value)) {
+        if (empty($value)) {
             throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
         }
     }
