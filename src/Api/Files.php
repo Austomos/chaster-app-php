@@ -42,37 +42,39 @@ class Files extends Request implements FilesInterface
      * The attachment token expires after one hour.
      * @link https://api.chaster.app/api/#/Files/StorageController_uploadFiles
      *
-     * @param array|\ChasterApp\RequestBody\Files\UploadFiles $files
-     * @param string|\ChasterApp\Data\Enum\StorageFileType $type
+     * @param \ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface|array $files Mandatory. The files to upload.
+     * @param string|\ChasterApp\Data\Enum\StorageFileType $type Mandatory. The target storage
      *
      * @return \ChasterApp\Interfaces\ResponseInterface
-     * @throws \ChasterApp\Exception\ResponseChasterException
-     * @throws \ChasterApp\Exception\RequestChasterException
+     *
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function upload(
-        UploadFiles|array $files,
+        UploadFilesInterface|array $files,
         StorageFileType|string $type = StorageFileType::messaging
     ): ResponseInterface {
-        $this->checkMandatoryArgument($files->getArrayCopy(), 'Files to upload');
-        $this->checkMandatoryArgument($type, 'Target storage');
         if ($type instanceof StorageFileType) {
             $type = $type->value;
         }
+        $this->isNotEmptyMandatoryArgument($type, 'Target storage');
 
-        $multipart = new ClientOptions();
-        $multipart->setMultipartValue('type', $type);
-        foreach ($files as $file) {
-            $temp = [...$multipart->getMultipartValue('files'), $file];
-            $multipart->setMultipartValue('files', $temp);
+        if ($files instanceof UploadFilesInterface) {
+            $files = $files->getFiles();
         }
+        $this->isNotEmptyMandatoryArgument($files, 'Files');
 
-        $this->postClient('/upload', options: $multipart);
+        $options = new ClientOptions();
+        $options->setMultipartValue('type', $type);
+        foreach ($files as $file) {
+            $options->setMultipartValue(
+                name: $file['name'],
+                contents: $file['contents'],
+                filename: $file['filename']
+            );
+        }
+        $this->postClient('/upload', options: $options);
         return $this->response(201);
-    }
-
-    private function setUploadFiles(UploadFilesInterface|array $files, ClientOptionsInterface|array $options): array
-    {
-        return [];
     }
 }
