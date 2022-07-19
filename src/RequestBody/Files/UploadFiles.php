@@ -18,23 +18,25 @@ class UploadFiles extends ArrayObject implements UploadFilesInterface
         if (!file_exists($path)) {
             throw new InvalidArgumentChasterException('File does not exist', 404);
         }
-        if (empty($filename)) {
-            throw new InvalidArgumentChasterException('File name is empty', 400);
+        try {
+            $this->append([
+                'name' => 'files',
+                'contents' => Psr7\Utils::tryFopen($path, 'r'),
+                'filename' => $filename,
+            ]);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentChasterException('File could not be read', 500, $e);
         }
-        $this->offsetSet($filename, [
-            'name' => 'files',
-            'contents' => Psr7\Utils::tryFopen($path, 'r'),
-            'filename' => $filename,
-        ]);
-    }
-
-    public function removeFile(string $filename): void
-    {
-        $this->offsetUnset($filename);
     }
 
     public function setFiles(UploadFilesInterface $files): void
     {
         $this->exchangeArray($files->getArrayCopy());
     }
+
+    public function getFiles(): array
+    {
+        return $this->getArrayCopy();
+    }
+
 }
