@@ -5,6 +5,7 @@ namespace ChasterApp;
 use ChasterApp\Interfaces\ClientOptionsInterface;
 use ArrayObject;
 use JetBrains\PhpStorm\ArrayShape;
+use Psr\Http\Message\StreamInterface;
 
 class ClientOptions extends ArrayObject implements ClientOptionsInterface
 {
@@ -118,23 +119,17 @@ class ClientOptions extends ArrayObject implements ClientOptionsInterface
         $this->multipart->exchangeArray([]);
     }
 
-    public function getMultipartValue(string $key): mixed
-    {
-        return $this->multipart->offsetGet($key);
-    }
-
-    public function hasMultipartValue(string $key): bool
-    {
-        return $this->multipart->offsetExists($key);
-    }
-
-    public function removeMultipartValue(string $key): void
-    {
-        $this->multipart->offsetUnset($key);
-    }
-
-    public function setMultipartValue(string $key, mixed $value): void
-    {
-        $this->multipart->offsetSet($key, $value);
+    public function setMultipartValue(
+        string $name,
+        StreamInterface|string $contents,
+        array $headers = [],
+        string $filename = null
+    ): void {
+        $this->multipart->append([
+            'name' => $name,
+            'contents' => $contents,
+            'headers' => $headers,
+            'filename' => $filename,
+        ]);
     }
 }
