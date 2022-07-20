@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Test\ChasterApp\Api;
 
 use ChasterApp\Api\Files;
 use ChasterApp\Exception\InvalidArgumentChasterException;

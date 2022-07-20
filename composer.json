@@ -18,7 +18,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\ChasterApp\\": "tests/"
+            "Test\\ChasterApp\\": "tests/"
         }
     },
     "require": {
