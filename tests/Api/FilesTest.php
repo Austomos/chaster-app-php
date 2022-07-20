@@ -2,9 +2,7 @@
 
 namespace Api;
 
-use ChasterApp\Api\Conversations;
 use ChasterApp\Api\Files;
-use ChasterApp\Data\Enum\ConversationsStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
@@ -14,16 +12,16 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
-class FilesTest extends TestCase {
+class FilesTest extends TestCase
+{
 
     protected function setUp(): void
     {
-//        $this->files = Mockery::mock(Files::class)->makePartial();
         $this->files = new Files('mock_token');
-        $reflection = new \ReflectionClass(Files::class);
+        $reflection = new ReflectionClass(Files::class);
         $this->clientProperty = $reflection->getProperty('client');
         parent::setUp();
     }
@@ -55,7 +53,7 @@ class FilesTest extends TestCase {
 
     public function testFindInvalidArgumentException(): void
     {
-        $this->expectException(\ChasterApp\Exception\InvalidArgumentChasterException::class);
+        $this->expectException(InvalidArgumentChasterException::class);
         $this->expectExceptionCode(400);
         $this->expectExceptionMessage('File key is mandatory, can\'t be empty');
         try {
@@ -76,7 +74,7 @@ class FilesTest extends TestCase {
         ]);
 
         $this->setClientProperty($mock);
-        $this->expectException(\ChasterApp\Exception\RequestChasterException::class);
+        $this->expectException(RequestChasterException::class);
         $this->expectExceptionCode(401);
         $this->expectExceptionMessage('Request failed: Unauthorized mock - /files/mock_file_key');
         try {
@@ -93,7 +91,7 @@ class FilesTest extends TestCase {
         ]);
 
         $this->setClientProperty($mock);
-        $this->expectException(\ChasterApp\Exception\ResponseChasterException::class);
+        $this->expectException(ResponseChasterException::class);
         $this->expectExceptionCode(200);
         $this->expectExceptionMessage('HTTP Code Expected: 201 Actual: 200 Reason: OK');
         try {
@@ -103,9 +101,27 @@ class FilesTest extends TestCase {
         }
     }
 
-    public function testUpload()
+    public function testUploadStorageFileTypeInvalidArgumentException(): void
     {
-        $this->assertTrue(true);
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Target storage is mandatory, can\'t be empty');
+        try {
+            $this->files->upload([], '');
+        } catch (RequestChasterException|ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
     }
 
+    public function testUploadFilesInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Files is mandatory, can\'t be empty');
+        try {
+            $this->files->upload([], 'mock_target_storage_type');
+        } catch (RequestChasterException|ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
+    }
 }
