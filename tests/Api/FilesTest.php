@@ -113,7 +113,7 @@ class FilesTest extends TestCase
         }
     }
 
-    public function testUploadFilesInvalidArgumentException(): void
+    public function testUploadEmptyFilesInvalidArgumentException(): void
     {
         $this->expectException(InvalidArgumentChasterException::class);
         $this->expectExceptionCode(400);
