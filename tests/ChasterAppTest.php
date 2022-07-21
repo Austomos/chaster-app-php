@@ -28,5 +28,4 @@ class ChasterAppTest extends TestCase
         $this->expectExceptionMessage('Access token or developer token is required');
         new ChasterApp('');
     }
-    
 }
