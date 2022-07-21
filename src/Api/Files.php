@@ -4,6 +4,7 @@ namespace ChasterApp\Api;
 
 use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\StorageFileType;
+use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Interfaces\Api\FilesInterface;
 use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
 use ChasterApp\Interfaces\ResponseInterface;
@@ -64,6 +65,9 @@ class Files extends Request implements FilesInterface
             $files = $files->getFiles();
         }
         $this->isNotEmptyMandatoryArgument($files, 'Files');
+        if (!is_array($files)) {
+            throw new InvalidArgumentChasterException('Files argument must be an array of files', 400);
+        }
 
         $options = new ClientOptions();
         $options->setMultipartValue('type', $type);
