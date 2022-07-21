@@ -14,11 +14,14 @@
     "autoload": {
         "psr-4": {
             "ChasterApp\\": "src/"
-        }
+        },
+        "files": [
+            "src/Utils/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\ChasterApp\\": "tests/"
+            "Tests\\ChasterApp\\": "tests/"
         }
     },
     "require": {
