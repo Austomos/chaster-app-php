@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Conversations;
 use ChasterApp\Data\Enum\ConversationsStatus;

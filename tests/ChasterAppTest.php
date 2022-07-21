@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\ChasterApp;
+namespace Tests\ChasterApp;
 
 use ChasterApp\ChasterApp;
 use ChasterApp\Exception\InvalidArgumentChasterException;
