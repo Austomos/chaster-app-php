@@ -23,7 +23,7 @@ interface FilesInterface
      * The attachment token expires after one hour.
      * @link https://api.chaster.app/api/#/Files/StorageController_uploadFiles
      *
-     * @param \ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface|array $files Mandatory. The files to upload.
+     * @param array|\ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface $files Mandatory. The files to upload.
      * @param string|\ChasterApp\Data\Enum\StorageFileType $type Mandatory. The target storage
      *
      * @return \ChasterApp\Interfaces\ResponseInterface

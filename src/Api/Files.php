@@ -41,7 +41,7 @@ class Files extends Request implements FilesInterface
      * The attachment token expires after one hour.
      * @link https://api.chaster.app/api/#/Files/StorageController_uploadFiles
      *
-     * @param \ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface|array $files Mandatory. The files to upload.
+     * @param array|\ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface $files Mandatory. The files to upload.
      * @param string|\ChasterApp\Data\Enum\StorageFileType $type Mandatory. The target storage
      *
      * @return \ChasterApp\Interfaces\ResponseInterface
@@ -51,30 +51,30 @@ class Files extends Request implements FilesInterface
      * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function upload(
-        UploadFilesInterface|array $files,
-        StorageFileType|string $type = StorageFileType::messaging
+        array|UploadFilesInterface $files,
+        string|StorageFileType $type = StorageFileType::messaging
     ): ResponseInterface {
         if ($type instanceof StorageFileType) {
             $type = $type->value;
+        } else {
+            $this->isNotEmptyMandatoryArgument($type, 'Storage file type');
         }
-        $this->isNotEmptyMandatoryArgument($type, 'Target storage');
 
         if ($files instanceof UploadFilesInterface) {
             $files = $files->getFiles();
         }
         $this->isNotEmptyMandatoryArgument($files, 'Files');
-        if (!is_array($files)) {
-            throw new InvalidArgumentChasterException('Files argument must be an array of files', 400);
-        }
 
         $options = new ClientOptions();
         $options->setMultipartValue('type', $type);
         foreach ($files as $file) {
-            $options->setMultipartValue(
-                name: $file['name'],
-                contents: $file['contents'],
-                filename: $file['filename']
-            );
+            if (!is_array($file) || !array_keys_exist(['name', 'contents', 'filename'], $file)) {
+                throw new InvalidArgumentChasterException(
+                    'File must be an array with name, contents and filename',
+                    400
+                );
+            }
+            $options->setMultipartValue(name: $file['name'], contents: $file['contents'], filename: $file['filename']);
         }
         $this->postClient('/upload', options: $options);
         return $this->response(201);
