@@ -45,13 +45,13 @@ class FilesTest extends TestCase
         $this->setClientProperty($mock);
 
         try {
-            $responseOne = $this->files->find(fileKey: 'mock_file_key');
+            $response = $this->files->find(fileKey: 'mock_file_key');
         } catch (InvalidArgumentChasterException|RequestChasterException|ResponseChasterException $e) {
             $this->fail($e->getMessage());
         }
         $this->assertSame('/files', $this->files->getRoute());
-        $this->assertEquals(201, $responseOne->getStatusCode());
-        $this->assertEquals((object) ['body' => 'mock_value'], $responseOne->getBodyObject());
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
     }
 
     public function testFindInvalidArgumentException(): void
@@ -104,27 +104,188 @@ class FilesTest extends TestCase
         }
     }
 
-    public function testUploadStorageFileTypeInvalidArgumentException(): void
+    public function testUploadEmptyStorageFileTypeInvalidArgumentException(): void
     {
         $this->expectException(InvalidArgumentChasterException::class);
         $this->expectExceptionCode(400);
-        $this->expectExceptionMessage('Target storage is mandatory, can\'t be empty');
+        $this->expectExceptionMessage('Storage file type is mandatory, can\'t be empty');
         try {
-            $this->files->upload([], '');
+            $this->files->upload(
+                files: ['mock_only_for_required_argument'],
+                type: ''
+            );
         } catch (RequestChasterException|ResponseChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
 
-    public function testUploadEmptyFilesInvalidArgumentException(): void
+    /**
+     * @dataProvider uploadEmptyFilesInvalidArgumentExceptionProvider
+     *
+     * @param $files
+     * @return void
+     */
+    public function testUploadEmptyFilesInvalidArgumentException($files): void
     {
         $this->expectException(InvalidArgumentChasterException::class);
         $this->expectExceptionCode(400);
         $this->expectExceptionMessage('Files is mandatory, can\'t be empty');
         try {
-            $this->files->upload([], 'mock_target_storage_type');
+            $this->files->upload(files: $files);
         } catch (RequestChasterException|ResponseChasterException $e) {
             $this->fail($e->getMessage());
         }
+    }
+    #[ArrayShape([
+        'empty array' => "array[]",
+        'empty UploadFiles' => "\ChasterApp\RequestBody\Files\UploadFiles[]"
+    ])] public function uploadEmptyFilesInvalidArgumentExceptionProvider(): array
+    {
+        return [
+            'empty array' => [
+                [],
+            ],
+            'empty UploadFiles' => [
+                new UploadFiles()
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerTestUploadInvalidFileOfFilesInvalidArgumentException
+     */
+    public function testUploadInvalidFileOfArrayFilesInvalidArgumentException(array $files): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('File must be an array with name, contents and filename');
+        try {
+            $this->files->upload(files: $files);
+        } catch (RequestChasterException|ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
+    }
+
+    #[ArrayShape([
+        'empty file' => "array[]",
+        'invalid typing file' => "string",
+        'invalid key of file array' => "\string[][]"
+    ])] public function providerTestUploadInvalidFileOfFilesInvalidArgumentException(): array
+    {
+        return [
+            'empty file' => [
+                [
+                    [
+                        'name' => 'mock_file_name',
+                        'contents' => 'mock_file_content',
+                        'filename' => 'mock_file_filename',
+                    ],
+                    []
+                ],
+            ],
+            'invalid typing file' => [
+                [
+                    'name' => 'mock_file_name',
+                    'contents' => 'mock_file_content',
+                    'filename' => 'mock_file_filename',
+                ],
+                [
+                    'mock_string_file'
+                ]
+            ],
+            'invalid key of file array' => [
+                [
+                    'name' => 'mock_file_name',
+                    'contents' => 'mock_file_content',
+                    'filename' => 'mock_file_filename',
+                ],
+                [
+                    'wrong_key' => 'mock_file_name',
+                    'contents' => 'mock_file_content',
+                    'filename' => 'mock_file_filename',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerTestUploadSuccess
+     */
+    public function testUploadSuccess(array|UploadFilesInterface $files): void
+    {
+        $mock = new MockHandler([
+            new Response(201, [], '{"body": "mock_value"}'),
+        ]);
+        $this->setClientProperty($mock);
+
+        try {
+            $response = $this->files->upload($files);
+        } catch (InvalidArgumentChasterException|RequestChasterException|ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
+        $this->assertSame('/files', $this->files->getRoute());
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
+    }
+
+    #[ArrayShape([
+        'array 1 file' => "\string[][][]",
+        'array 3 files' => "\string[][]",
+        'UploadFiles 1 file' => "\ChasterApp\RequestBody\Files\UploadFiles[]",
+        'UploadFiles 3 files' => "\ChasterApp\RequestBody\Files\UploadFiles[]"
+    ])] public function providerTestUploadSuccess(): array
+    {
+        return [
+            'array 1 file' => [
+                [
+                    [
+                        'name' => 'mock_file_name',
+                        'contents' => 'mock_file_content',
+                        'filename' => 'mock_file_filename',
+                    ],
+                ],
+            ],
+            'array 3 files' => [
+                [
+                    [
+                        'name' => 'mock_file_name_1',
+                        'contents' => 'mock_file_content_1',
+                        'filename' => 'mock_file_filename_1',
+                    ], [
+                        'name' => 'mock_file_nam_2e',
+                        'contents' => 'mock_file_content_2',
+                        'filename' => 'mock_file_filename_2',
+                    ], [
+                        'name' => 'mock_file_name_3',
+                        'contents' => 'mock_file_content_3',
+                        'filename' => 'mock_file_filename_3',
+                    ],
+                ]
+            ],
+            'UploadFiles 1 file' => [
+                new UploadFiles([[
+                    'name' => 'mock_file_name',
+                    'contents' => 'mock_file_content',
+                    'filename' => 'mock_file_filename',
+                ]])
+            ],
+            'UploadFiles 3 files' => [
+                new UploadFiles([
+                    [
+                        'name' => 'mock_file_name_1',
+                        'contents' => 'mock_file_content_1',
+                        'filename' => 'mock_file_filename_1',
+                    ], [
+                        'name' => 'mock_file_nam_2e',
+                        'contents' => 'mock_file_content_2',
+                        'filename' => 'mock_file_filename_2',
+                    ], [
+                        'name' => 'mock_file_name_3',
+                        'contents' => 'mock_file_content_3',
+                        'filename' => 'mock_file_filename_3',
+                    ]
+                ]),
+            ],
+        ];
     }
 }
