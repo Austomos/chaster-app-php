@@ -6,10 +6,10 @@ use ArrayObject;
 use GuzzleHttp\Psr7;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
+use RuntimeException;
 
 class UploadFiles extends ArrayObject implements UploadFilesInterface
 {
-
     /**
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      */
@@ -24,7 +24,7 @@ class UploadFiles extends ArrayObject implements UploadFilesInterface
                 'contents' => Psr7\Utils::tryFopen($path, 'r'),
                 'filename' => $filename,
             ]);
-        } catch (\Exception $e) {
+        } catch (RuntimeException $e) {
             throw new InvalidArgumentChasterException('File could not be read', 500, $e);
         }
     }
@@ -38,5 +38,4 @@ class UploadFiles extends ArrayObject implements UploadFilesInterface
     {
         return $this->getArrayCopy();
     }
-
 }

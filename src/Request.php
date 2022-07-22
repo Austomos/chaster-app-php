@@ -162,7 +162,8 @@ abstract class Request implements RequestInterface
     public function response(int $expectedStatusCode): ResponseInterface
     {
         $response = new Response($this->response);
-        if ($expectedStatusCode >= 100
+        if (
+            $expectedStatusCode >= 100
             && $expectedStatusCode < 600
             && $response->getStatusCode() !== $expectedStatusCode
         ) {

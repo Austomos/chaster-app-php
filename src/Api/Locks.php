@@ -12,7 +12,6 @@ use ChasterApp\Request;
 
 class Locks extends Request implements LocksInterface
 {
-
     public function getBaseRoute(): string
     {
         return 'locks';

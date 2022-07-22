@@ -12,8 +12,6 @@ use ChasterApp\Request;
 
 class Files extends Request implements FilesInterface
 {
-
-
     public function getBaseRoute(): string
     {
         return 'files';

@@ -6,12 +6,15 @@ use ChasterApp\Api\Files;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
+use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
+use ChasterApp\RequestBody\Files\UploadFiles;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use JetBrains\PhpStorm\ArrayShape;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

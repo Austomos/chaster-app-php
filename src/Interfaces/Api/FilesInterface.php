@@ -8,7 +8,6 @@ use ChasterApp\Interfaces\ResponseInterface;
 
 interface FilesInterface
 {
-
     /**
      * Find a file
      * @link https://api.chaster.app/api/#/Files/StorageController_getFileFromKey
