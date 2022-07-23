@@ -37,10 +37,11 @@ class Keyholder extends Request implements KeyholderInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function search(array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $this->postClient('locks/search', $body);
         return $this->response(201);
     }
