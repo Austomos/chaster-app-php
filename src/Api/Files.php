@@ -9,6 +9,7 @@ use ChasterApp\Interfaces\Api\FilesInterface;
 use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
+use ChasterApp\Utilities;
 
 class Files extends Request implements FilesInterface
 {
@@ -68,7 +69,7 @@ class Files extends Request implements FilesInterface
         $options = new ClientOptions();
         $options->setMultipartValue('type', $type);
         foreach ($files as $file) {
-            if (!is_array($file) || !array_keys_exist(['name', 'contents', 'filename'], $file)) {
+            if (!is_array($file) || !Utilities::arrayKeysExist(['name', 'contents', 'filename'], $file)) {
                 throw new InvalidArgumentChasterException(
                     'File must be an array with name, contents and filename',
                     400

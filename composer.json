@@ -14,10 +14,7 @@
     "autoload": {
         "psr-4": {
             "ChasterApp\\": "src/"
-        },
-        "files": [
-            "src/Utils/functions.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
