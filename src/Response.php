@@ -8,8 +8,11 @@ use JsonException;
 
 class Response extends \GuzzleHttp\Psr7\Response implements ResponseInterface
 {
+    private array|object $json;
+
     /**
      * @param \Psr\Http\Message\ResponseInterface $response
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function __construct(\Psr\Http\Message\ResponseInterface $response)
     {
@@ -20,17 +23,26 @@ class Response extends \GuzzleHttp\Psr7\Response implements ResponseInterface
             $response->getProtocolVersion(),
             $response->getReasonPhrase()
         );
-    }
-
-    /**
-     * @throws JsonChasterException
-     */
-    public function getBodyObject(): object
-    {
         try {
-            return (object) json_decode($this->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $this->json =  json_decode($this->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new JsonChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * @return object
+     */
+    public function getBodyObject(): object
+    {
+        return (object) $this->json;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBodyArray(): array
+    {
+        return (array) $this->json;
     }
 }

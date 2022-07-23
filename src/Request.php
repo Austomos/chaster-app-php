@@ -158,6 +158,7 @@ abstract class Request implements RequestInterface
 
     /**
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function response(int $expectedStatusCode): ResponseInterface
     {

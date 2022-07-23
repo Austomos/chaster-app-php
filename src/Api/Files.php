@@ -48,7 +48,7 @@ class Files extends Request implements FilesInterface
      *
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
-     * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException|\ChasterApp\Exception\JsonChasterException
      */
     public function upload(
         array|UploadFilesInterface $files,
