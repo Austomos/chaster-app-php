@@ -28,7 +28,7 @@ class Files extends Request implements FilesInterface
      *
      * @throws \ChasterApp\Exception\ResponseChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
-     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException|\ChasterApp\Exception\JsonChasterException
      */
     public function find(string $fileKey): ResponseInterface
     {
