@@ -2,7 +2,7 @@
 
 namespace ChasterApp;
 
-class Utils
+class Utilities
 {
     /**
      * @param array $keys Mandatory. The keys to check.
