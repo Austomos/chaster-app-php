@@ -67,7 +67,7 @@ abstract class Request implements RequestInterface
             $this->response = $this->client->request($method, $route, $options);
         } catch (GuzzleException $e) {
             throw new RequestChasterException(
-                'Request failed : ' . $e->getMessage() . ' - ' . $route,
+                'Request failed: ' . $e->getMessage() . ' - ' . $route,
                 $e->getCode(),
                 $e
             );
