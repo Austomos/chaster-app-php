@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Conversations;
 use ChasterApp\Data\Enum\ConversationsStatus;
@@ -44,7 +44,6 @@ class ConversationsTest extends TestCase
                 new Response(401, reason: 'Unauthorized mock')
             )
         ]);
-
         $this->setClientProperty($mock);
 
         $responseOne = $this->conversation->get(status: ConversationsStatus::approved);

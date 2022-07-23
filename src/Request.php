@@ -158,16 +158,20 @@ abstract class Request implements RequestInterface
 
     /**
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function response(int $expectedStatusCode): ResponseInterface
     {
         $response = new Response($this->response);
-        if ($expectedStatusCode >= 100
+        if (
+            $expectedStatusCode >= 100
             && $expectedStatusCode < 600
             && $response->getStatusCode() !== $expectedStatusCode
         ) {
             throw new ResponseChasterException(
-                $response->getReasonPhrase(),
+                'HTTP Code Expected: ' . $expectedStatusCode
+                . ' Actual: ' . $response->getStatusCode()
+                . ' Reason: ' . $response->getReasonPhrase(),
                 $response->getStatusCode(),
             );
         }
@@ -183,5 +187,27 @@ abstract class Request implements RequestInterface
         if (empty($value)) {
             throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
         }
+    }
+
+    /**
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     */
+    public function isNotEmptyMandatoryArgument(mixed $value, string $name): bool
+    {
+        if (empty($value)) {
+            throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory, can\'t be empty', 400);
+        }
+        return true;
+    }
+
+    /**
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     */
+    public function issetMandatoryArgument(mixed $value, string $name): bool
+    {
+        if (empty($value)) {
+            throw new InvalidArgumentChasterException(ucfirst($name) . ' is mandatory', 400);
+        }
+        return true;
     }
 }

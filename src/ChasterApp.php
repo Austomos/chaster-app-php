@@ -36,7 +36,7 @@ class ChasterApp implements ChasterFactoryInterface
     public function __construct(string $accessToken)
     {
         if (empty($accessToken)) {
-            throw new InvalidArgumentChasterException('Access token or developer token is required');
+            throw new InvalidArgumentChasterException('Access token or developer token is required', 400);
         }
         $this->token = $accessToken;
     }

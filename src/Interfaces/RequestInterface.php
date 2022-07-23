@@ -13,4 +13,7 @@ interface RequestInterface
 
     public function getBaseRoute(): string;
     public function getRoute(): string;
+
+    public function issetMandatoryArgument(mixed $value, string $name): bool;
+    public function isNotEmptyMandatoryArgument(mixed $value, string $name): bool;
 }

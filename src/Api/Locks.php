@@ -3,14 +3,15 @@
 namespace ChasterApp\Api;
 
 use ChasterApp\Data\Enum\LocksStatus;
-use ChasterApp\Exception\{InvalidArgumentChasterException, RequestChasterException, ResponseChasterException,};
+use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\RequestChasterException;
+use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\LocksInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
 
 class Locks extends Request implements LocksInterface
 {
-
     public function getBaseRoute(): string
     {
         return 'locks';
