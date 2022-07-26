@@ -22,7 +22,7 @@ class Keyholder extends Request implements KeyholderInterface
      *      {
      *          'criteria': {
      *              'sharedLocks': {
-     *                  'sharedLockIds': [],
+     *                  'sharedLockIds': string[],
      *                  'includeKeyholderLocks': 'bool'
      *              }
      *          },
@@ -42,7 +42,7 @@ class Keyholder extends Request implements KeyholderInterface
     public function search(array $body): ResponseInterface
     {
         $this->isNotEmptyMandatoryArgument($body, 'Body');
-        $this->postClient('locks/search', $body);
+        $this->postClient('/locks/search', $body);
         return $this->response(201);
     }
 }
