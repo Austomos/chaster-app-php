@@ -4,6 +4,7 @@ namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Files;
 use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
@@ -20,20 +21,12 @@ use ReflectionClass;
 
 class FilesTest extends TestCase
 {
-
     protected function setUp(): void
     {
         $this->files = new Files('mock_token');
         $reflection = new ReflectionClass(Files::class);
         $this->clientProperty = $reflection->getProperty('client');
         parent::setUp();
-    }
-
-    protected function setClientProperty(MockHandler $mockHandler): void
-    {
-        $this->clientProperty->setValue($this->files, new Client([
-            'handler' => HandlerStack::create($mockHandler)
-        ]));
     }
 
     public function testFindSuccess(): void
@@ -46,12 +39,25 @@ class FilesTest extends TestCase
 
         try {
             $response = $this->files->find(fileKey: 'mock_file_key');
-        } catch (InvalidArgumentChasterException|RequestChasterException|ResponseChasterException $e) {
+        } catch (
+            InvalidArgumentChasterException | RequestChasterException | ResponseChasterException | JsonChasterException
+            $e
+        ) {
             $this->fail($e->getMessage());
         }
         $this->assertSame('/files', $this->files->getRoute());
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
+        $this->assertEquals((object)['body' => 'mock_value'], $response->getBodyObject());
+    }
+
+    protected function setClientProperty(MockHandler $mockHandler): void
+    {
+        $this->clientProperty->setValue(
+            $this->files,
+            new Client([
+                'handler' => HandlerStack::create($mockHandler)
+            ])
+        );
     }
 
     public function testFindInvalidArgumentException(): void
@@ -61,7 +67,7 @@ class FilesTest extends TestCase
         $this->expectExceptionMessage('File key is mandatory, can\'t be empty');
         try {
             $this->files->find(fileKey: '');
-        } catch (RequestChasterException|ResponseChasterException $e) {
+        } catch (RequestChasterException | ResponseChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -82,7 +88,7 @@ class FilesTest extends TestCase
         $this->expectExceptionMessage('Request failed: Unauthorized mock - /files/mock_file_key');
         try {
             $this->files->find(fileKey: 'mock_file_key');
-        } catch (InvalidArgumentChasterException|ResponseChasterException $e) {
+        } catch (InvalidArgumentChasterException | ResponseChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -99,7 +105,7 @@ class FilesTest extends TestCase
         $this->expectExceptionMessage('HTTP Code Expected: 201 Actual: 200 Reason: OK');
         try {
             $this->files->find(fileKey: 'mock_file_key');
-        } catch (InvalidArgumentChasterException|RequestChasterException $e) {
+        } catch (InvalidArgumentChasterException | RequestChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -114,7 +120,7 @@ class FilesTest extends TestCase
                 files: ['mock_only_for_required_argument'],
                 type: ''
             );
-        } catch (RequestChasterException|ResponseChasterException $e) {
+        } catch (RequestChasterException | ResponseChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -132,10 +138,11 @@ class FilesTest extends TestCase
         $this->expectExceptionMessage('Files is mandatory, can\'t be empty');
         try {
             $this->files->upload(files: $files);
-        } catch (RequestChasterException|ResponseChasterException $e) {
+        } catch (RequestChasterException | ResponseChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
+
     #[ArrayShape([
         'empty array' => "array[]",
         'empty UploadFiles' => "\ChasterApp\RequestBody\Files\UploadFiles[]"
@@ -161,7 +168,7 @@ class FilesTest extends TestCase
         $this->expectExceptionMessage('File must be an array with name, contents and filename');
         try {
             $this->files->upload(files: $files);
-        } catch (RequestChasterException|ResponseChasterException $e) {
+        } catch (RequestChasterException | ResponseChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -220,12 +227,15 @@ class FilesTest extends TestCase
 
         try {
             $response = $this->files->upload($files);
-        } catch (InvalidArgumentChasterException|RequestChasterException|ResponseChasterException $e) {
+        } catch (
+            InvalidArgumentChasterException | RequestChasterException | ResponseChasterException | JsonChasterException
+            $e
+        ) {
             $this->fail($e->getMessage());
         }
         $this->assertSame('/files', $this->files->getRoute());
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
+        $this->assertEquals((object)['body' => 'mock_value'], $response->getBodyObject());
     }
 
     #[ArrayShape([
@@ -251,11 +261,13 @@ class FilesTest extends TestCase
                         'name' => 'mock_file_name_1',
                         'contents' => 'mock_file_content_1',
                         'filename' => 'mock_file_filename_1',
-                    ], [
+                    ],
+                    [
                         'name' => 'mock_file_nam_2e',
                         'contents' => 'mock_file_content_2',
                         'filename' => 'mock_file_filename_2',
-                    ], [
+                    ],
+                    [
                         'name' => 'mock_file_name_3',
                         'contents' => 'mock_file_content_3',
                         'filename' => 'mock_file_filename_3',
@@ -263,11 +275,13 @@ class FilesTest extends TestCase
                 ]
             ],
             'UploadFiles 1 file' => [
-                new UploadFiles([[
-                    'name' => 'mock_file_name',
-                    'contents' => 'mock_file_content',
-                    'filename' => 'mock_file_filename',
-                ]])
+                new UploadFiles([
+                    [
+                        'name' => 'mock_file_name',
+                        'contents' => 'mock_file_content',
+                        'filename' => 'mock_file_filename',
+                    ]
+                ])
             ],
             'UploadFiles 3 files' => [
                 new UploadFiles([
@@ -275,11 +289,13 @@ class FilesTest extends TestCase
                         'name' => 'mock_file_name_1',
                         'contents' => 'mock_file_content_1',
                         'filename' => 'mock_file_filename_1',
-                    ], [
+                    ],
+                    [
                         'name' => 'mock_file_nam_2e',
                         'contents' => 'mock_file_content_2',
                         'filename' => 'mock_file_filename_2',
-                    ], [
+                    ],
+                    [
                         'name' => 'mock_file_name_3',
                         'contents' => 'mock_file_content_3',
                         'filename' => 'mock_file_filename_3',
