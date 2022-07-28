@@ -2,9 +2,12 @@
 
 namespace ChasterApp\Data\Enum;
 
-enum LocksStatus
+/**
+ *
+ */
+enum LocksStatus: string
 {
-    case active;
-    case archived;
-    case all;
+    case active = 'active';
+    case archived = 'archived';
+    case all = 'all';
 }
