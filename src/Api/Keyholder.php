@@ -2,6 +2,7 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\ClientOptions;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
@@ -42,7 +43,7 @@ class Keyholder extends Request implements KeyholderInterface
     public function search(array $body): ResponseInterface
     {
         $this->isNotEmptyMandatoryArgument($body, 'Body');
-        $this->postClient('/locks/search', $body);
+        $this->postClient('/locks/search', options: new ClientOptions(json: $body));
         return $this->response(201);
     }
 }
