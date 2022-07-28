@@ -43,14 +43,6 @@ abstract class Request implements RequestInterface
     }
 
     /**
-     * @throws \ChasterApp\Exception\RequestChasterException
-     */
-    public function patchClient(string $uri, ?array $query = null, array|ClientOptionsInterface $options = []): void
-    {
-        $this->client('PATCH', $uri, $options);
-    }
-
-    /**
      * @param string $method
      * @param string $uri
      * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
@@ -112,47 +104,43 @@ abstract class Request implements RequestInterface
     abstract public function getBaseRoute(): string;
 
     /**
+     * @throws \ChasterApp\Exception\RequestChasterException
+     */
+    public function patchClient(string $uri, array|ClientOptionsInterface $options = []): void
+    {
+        $this->client('PATCH', $uri, $options);
+    }
+
+    /**
      * @param string $uri URI specific of the call
-     * @param array|null $body Array
      * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
      * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function postClient(string $uri, ?array $body = null, array|ClientOptionsInterface $options = []): void
+    public function postClient(string $uri, array|ClientOptionsInterface $options = []): void
     {
-        if (!empty($body)) {
-            $options['json'] = $body;
-        }
         $this->client('POST', $uri, $options);
     }
 
     /**
      * @param string $uri
-     * @param array|null $body
      * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
      * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function putClient(string $uri, ?array $body = null, array|ClientOptionsInterface $options = []): void
+    public function putClient(string $uri, array|ClientOptionsInterface $options = []): void
     {
-        if (!empty($body)) {
-            $options['json'] = $body;
-        }
         $this->client('PUT', $uri, $options);
     }
 
     /**
      * @param string $uri
-     * @param array|null $body
      * @param array|\ChasterApp\Interfaces\ClientOptionsInterface $options
      *
      * @throws \ChasterApp\Exception\RequestChasterException
      */
-    public function deleteClient(string $uri, ?array $body = null, array|ClientOptionsInterface $options = []): void
+    public function deleteClient(string $uri, array|ClientOptionsInterface $options = []): void
     {
-        if (!empty($body)) {
-            $options['json'] = $body;
-        }
         $this->client('DELETE', $uri, $options);
     }
 
@@ -164,14 +152,12 @@ abstract class Request implements RequestInterface
     {
         $response = new Response($this->response);
         if (
-            $expectedStatusCode >= 100
-            && $expectedStatusCode < 600
-            && $response->getStatusCode() !== $expectedStatusCode
+            $expectedStatusCode >= 100 && $expectedStatusCode < 600 && $response->getStatusCode(
+            ) !== $expectedStatusCode
         ) {
             throw new ResponseChasterException(
-                'HTTP Code Expected: ' . $expectedStatusCode
-                . ' Actual: ' . $response->getStatusCode()
-                . ' Reason: ' . $response->getReasonPhrase(),
+                'HTTP Code Expected: ' . $expectedStatusCode . ' Actual: ' . $response->getStatusCode(
+                ) . ' Reason: ' . $response->getReasonPhrase(),
                 $response->getStatusCode(),
             );
         }

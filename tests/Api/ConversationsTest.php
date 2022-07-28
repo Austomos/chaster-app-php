@@ -22,7 +22,6 @@ class ConversationsTest extends TestCase
         $this->conversation = Mockery::mock(Conversations::class)->makePartial();
         $reflection = new \ReflectionClass(Conversations::class);
         $this->clientProperty = $reflection->getProperty('client');
-        $this->clientProperty->setAccessible(true);
         parent::setUp();
     }
 

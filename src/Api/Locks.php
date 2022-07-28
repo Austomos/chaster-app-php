@@ -2,8 +2,10 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\LocksStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\LocksInterface;
@@ -53,12 +55,13 @@ class Locks extends Request implements LocksInterface
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
     public function updateTime(string $lockId, array $body): ResponseInterface
     {
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');
-        $this->postClient($lockId . '/update-time', $body);
+        $this->postClient($lockId . '/update-time', options:  new ClientOptions(json: $body));
         return $this->response(204);
     }
 
@@ -82,7 +85,7 @@ class Locks extends Request implements LocksInterface
     {
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');
-        $this->postClient($lockId . '/freeze', $body);
+        $this->postClient($lockId . '/freeze', options: new ClientOptions(json: $body));
         return $this->response(204);
     }
 }
