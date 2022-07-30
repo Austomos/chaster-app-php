@@ -19,7 +19,7 @@ class ConversationsTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->conversation = Mockery::mock(Conversations::class)->makePartial();
+        $this->conversation = new Conversations('mock_token');
         $reflection = new \ReflectionClass(Conversations::class);
         $this->clientProperty = $reflection->getProperty('client');
         parent::setUp();
@@ -32,16 +32,11 @@ class ConversationsTest extends TestCase
         ]));
     }
 
-    public function testGet(): void
+    public function testGetSuccess(): void
     {
         $mock = new MockHandler([
             new Response(200, [], '{"body": "mock_value"}'),
             new Response(200, [], '{"body": "mock_value_2"}'),
-            new RequestException(
-                'Unauthorized mock',
-                new Request('GET', '/conversations'),
-                new Response(401, reason: 'Unauthorized mock')
-            )
         ]);
         $this->setClientProperty($mock);
 
@@ -57,6 +52,20 @@ class ConversationsTest extends TestCase
         );
         $this->assertEquals(200, $responseTwo->getStatusCode());
         $this->assertEquals((object) ['body' => 'mock_value_2'], $responseTwo->getBodyObject());
+    }
+
+    public function testGetException(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], '{"body": "mock_value"}'),
+            new Response(200, [], '{"body": "mock_value_2"}'),
+            new RequestException(
+                'Unauthorized mock',
+                new Request('GET', '/conversations'),
+                new Response(401, reason: 'Unauthorized mock')
+            )
+        ]);
+        $this->setClientProperty($mock);
 
         $this->expectException(RequestChasterException::class);
         try {
