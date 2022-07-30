@@ -5,6 +5,7 @@ namespace ChasterApp\Api;
 use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\SharedLockStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\SharedLocksInterface;
@@ -176,6 +177,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      *
      * @deprecated
      */
@@ -183,7 +185,7 @@ class SharedLocks extends Request implements SharedLocksInterface
     {
         $this->checkMandatoryArgument($sharedLockId, 'Shared lock ID');
         $this->checkMandatoryArgument($body, 'Body');
-        $this->postClient('locks/shared-locks/extensions', $body);
+        $this->postClient('locks/shared-locks/extensions', options: new ClientOptions(json: $body));
         return $this->response(201);
     }
 
@@ -248,6 +250,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function removeFavorite(string $sharedLockId): ResponseInterface
     {
