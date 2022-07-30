@@ -4,6 +4,8 @@ namespace ChasterApp\Api;
 
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 
 class Util extends Request
 {
@@ -13,10 +15,10 @@ class Util extends Request
      * @throws ResponseChasterException
      * @throws RequestChasterException
      */
-    public function ping(): void
+    public function ping(): ResponseInterface
     {
-        $this->getClient('');
-        $this->checkResponseCode(200);
+        $this->getClient('/ping');
+        return $this->response(200);
     }
 
     public function getBaseRoute(): string

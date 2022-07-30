@@ -2,10 +2,18 @@
 
 namespace ChasterApp;
 
+use ChasterApp\Api\Conversations;
+use ChasterApp\Api\Files;
+use ChasterApp\Api\Keyholder;
+use ChasterApp\Api\Locks;
+use ChasterApp\Api\SharedLocks;
 use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Interfaces\Api\ConversationsInterface;
+use ChasterApp\Interfaces\Api\FilesInterface;
+use ChasterApp\Interfaces\Api\KeyholderInterface;
+use ChasterApp\Interfaces\Api\LocksInterface;
+use ChasterApp\Interfaces\Api\SharedLocksInterface;
 use ChasterApp\Interfaces\ChasterFactoryInterface;
-use ChasterApp\Api\{Conversations, Files, Keyholder, Locks, SharedLocks, Util};
-use JetBrains\PhpStorm\Pure;
 
 /**
  *
@@ -28,54 +36,18 @@ class ChasterApp implements ChasterFactoryInterface
     public function __construct(string $accessToken)
     {
         if (empty($accessToken)) {
-            throw new InvalidArgumentChasterException('Access token or developer token is required');
+            throw new InvalidArgumentChasterException('Access token or developer token is required', 400);
         }
         $this->token = $accessToken;
     }
 
     /**
      * Conversation route
-     * @return Conversations
+     * @return ConversationsInterface
      */
-    #[Pure] public function conversations(): Conversations
+    public function conversations(): ConversationsInterface
     {
         return new Conversations($this->token());
-    }
-
-    /**
-     * Files route
-     * @return Files
-     */
-    #[Pure] public function files(): Files
-    {
-        return new Files($this->token());
-    }
-
-    /**
-     * Keyholder routes
-     * @return Keyholder
-     */
-    #[Pure] public function keyholder(): Keyholder
-    {
-        return new Keyholder($this->token());
-    }
-
-    /**
-     * Locks routes
-     * @return Locks
-     */
-    #[Pure] public function locks(): Locks
-    {
-        return new Locks($this->token());
-    }
-
-    /**
-     * SharedLocks routes
-     * @return SharedLocks
-     */
-    #[Pure] public function sharedLocks(): SharedLocks
-    {
-        return new SharedLocks($this->token());
     }
 
     /**
@@ -85,5 +57,41 @@ class ChasterApp implements ChasterFactoryInterface
     public function token(): string
     {
         return $this->token;
+    }
+
+    /**
+     * Files route
+     * @return FilesInterface
+     */
+    public function files(): FilesInterface
+    {
+        return new Files($this->token());
+    }
+
+    /**
+     * Keyholder routes
+     * @return KeyholderInterface
+     */
+    public function keyholder(): KeyholderInterface
+    {
+        return new Keyholder($this->token());
+    }
+
+    /**
+     * Locks routes
+     * @return LocksInterface
+     */
+    public function locks(): LocksInterface
+    {
+        return new Locks($this->token());
+    }
+
+    /**
+     * SharedLocks routes
+     * @return SharedLocksInterface
+     */
+    public function sharedLocks(): SharedLocksInterface
+    {
+        return new SharedLocks($this->token());
     }
 }

@@ -2,11 +2,10 @@
 
 namespace ChasterApp\Api;
 
-use ChasterApp\Exception\InvalidArgumentChasterException;
-use ChasterApp\Exception\JsonChasterException;
-use ChasterApp\Exception\RequestChasterException;
-use ChasterApp\Exception\ResponseChasterException;
+use ChasterApp\ClientOptions;
 use ChasterApp\Interfaces\Api\KeyholderInterface;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 
 class Keyholder extends Request implements KeyholderInterface
 {
@@ -24,7 +23,7 @@ class Keyholder extends Request implements KeyholderInterface
      *      {
      *          'criteria': {
      *              'sharedLocks': {
-     *                  'sharedLockIds': [],
+     *                  'sharedLockIds': string[],
      *                  'includeKeyholderLocks': 'bool'
      *              }
      *          },
@@ -34,17 +33,17 @@ class Keyholder extends Request implements KeyholderInterface
      *          'limit': 0
      *      }
      *
-     * @return object
+     * @return \ChasterApp\Interfaces\ResponseInterface
      *
-     * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
-     * @throws RequestChasterException
-     * @throws ResponseChasterException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
-    public function search(array $body): object
+    public function search(array $body): ResponseInterface
     {
-        $this->checkMandatory($body, 'Body');
-        $this->postClient('locks/search', $body);
-        return $this->getResponseContents(201);
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
+        $this->postClient('/locks/search', options: new ClientOptions(json: $body));
+        return $this->response(201);
     }
 }

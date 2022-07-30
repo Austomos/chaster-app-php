@@ -2,12 +2,15 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\ConversationsStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\ConversationsInterface;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 use DateTime;
 
 class Conversations extends Request implements ConversationsInterface
@@ -23,27 +26,30 @@ class Conversations extends Request implements ConversationsInterface
      * The query offset, date of last message
      * Use the field lastMessageAt for pagination
      *
-     * @return object
+     * @return ResponseInterface
      *
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
     public function get(
         int $limit = 50,
         ConversationsStatus $status = ConversationsStatus::approved,
         DateTime|string $offset = ''
-    ): object {
-        $query['limit'] = $limit;
-        $query['status'] = $status->name;
-        if (isset($offset)) {
-            $query['offset'] = match (true) {
+    ): ResponseInterface {
+        if (!empty($offset)) {
+            $offset = match (true) {
                 is_string($offset) => $offset,
                 $offset instanceof DateTime => $offset->format('Y-m-d\TH:i:s.v\Z')
             };
         }
-        $this->getClient('', $query);
-        return $this->getResponseContents(200);
+        $options = new ClientOptions(query: [
+            'limit' => $limit,
+            'status' => $status,
+            'offset' => $offset,
+        ]);
+        $this->getClient('', options: $options);
+        return $this->response(200);
     }
 
 
@@ -62,18 +68,19 @@ class Conversations extends Request implements ConversationsInterface
      *      'nonce': 'string'
      *  ]
      *
-     * @return object
+     * @return ResponseInterface
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function create(array $body): object
+    public function create(array $body): ResponseInterface
     {
-        $this->checkMandatory($body, 'Body');
-        $this->postClient('', $body);
-        return $this->getResponseContents(201);
+        $this->checkMandatoryArgument($body, 'Body');
+        $options = new ClientOptions(json: $body);
+        $this->postClient('', options: $options);
+        return $this->response(201);
     }
 
     /**
@@ -82,18 +89,18 @@ class Conversations extends Request implements ConversationsInterface
      *
      * @param string $userId Mandatory user ID
      *
-     * @return object
+     * @return ResponseInterface
      *
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws InvalidArgumentChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function byUser(string $userId): object
+    public function byUser(string $userId): ResponseInterface
     {
-        $this->checkMandatory($userId, 'User ID');
+        $this->checkMandatoryArgument($userId, 'User ID');
         $this->getClient('by-user/' . $userId);
-        return $this->getResponseContents(200);
+        return $this->response(200);
     }
 
     /**
@@ -109,19 +116,19 @@ class Conversations extends Request implements ConversationsInterface
      *      'nonce': 'string'
      * ]
      *
-     * @return object
+     * @return ResponseInterface
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function send(string $conversationId, array $body): object
+    public function send(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->checkMandatory($body, 'Body');
-        $this->postClient($conversationId, $body);
-        return $this->getResponseContents(201);
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($body, 'Body');
+        $this->postClient($conversationId, options: new ClientOptions(json: $body));
+        return $this->response(201);
     }
 
     /**
@@ -130,18 +137,18 @@ class Conversations extends Request implements ConversationsInterface
      *
      * @param string $conversationId Mandatory conversation ID
      *
-     * @return object
+     * @return ResponseInterface
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function find(string $conversationId): object
+    public function find(string $conversationId): ResponseInterface
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
         $this->getClient($conversationId);
-        return $this->getResponseContents(200);
+        return $this->response(200);
     }
 
     /**
@@ -157,13 +164,14 @@ class Conversations extends Request implements ConversationsInterface
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function status(string $conversationId, array $body): void
+    public function status(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->checkMandatory($body, 'Body');
-        $this->putClient($conversationId . '/status');
-        $this->checkResponseCode(200);
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($body, 'Body');
+        $this->putClient($conversationId . '/status', options: new ClientOptions(json: $body));
+        return $this->response(200);
     }
 
     /**
@@ -179,13 +187,14 @@ class Conversations extends Request implements ConversationsInterface
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function unread(string $conversationId, array $body): void
+    public function unread(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $this->checkMandatory($body, 'Body');
-        $this->putClient($conversationId . '/unread');
-        $this->checkResponseCode(200);
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->checkMandatoryArgument($body, 'Body');
+        $this->putClient($conversationId . '/unread', options: new ClientOptions(json: $body));
+        return $this->response(200);
     }
 
     /**
@@ -196,22 +205,23 @@ class Conversations extends Request implements ConversationsInterface
      * @param int $limit Query limit
      * @param string|null $lastId Last message ID
      *
-     * @return object
+     * @return ResponseInterface
      *
      * @throws InvalidArgumentChasterException
-     * @throws JsonChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function messages(string $conversationId, int $limit = 50, ?string $lastId = null): object
+    public function messages(string $conversationId, int $limit = 50, ?string $lastId = null): ResponseInterface
     {
-        $this->checkMandatory($conversationId, 'Conversation ID');
-        $query['limit'] = $limit;
+        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $options = new ClientOptions();
+        $options->setQueryValue('limit', $limit);
         if (isset($lastId)) {
-            $query['lastId'] = $lastId;
+            $options->setQueryValue('lastId', $lastId);
         }
-        $this->getClient($conversationId . '/messages', $query);
-        return $this->getResponseContents(200);
+        $this->getClient($conversationId . '/messages', options: $options);
+        return $this->response(200);
     }
 
     public function getBaseRoute(): string

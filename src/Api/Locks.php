@@ -2,19 +2,18 @@
 
 namespace ChasterApp\Api;
 
+use ChasterApp\ClientOptions;
 use ChasterApp\Data\Enum\LocksStatus;
-use ChasterApp\Exception\{InvalidArgumentChasterException,
-    JsonChasterException,
-    RequestChasterException,
-    ResponseChasterException,
-};
+use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\JsonChasterException;
+use ChasterApp\Exception\RequestChasterException;
+use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\LocksInterface;
-use ChasterApp\Utils\Utils;
+use ChasterApp\Interfaces\ResponseInterface;
+use ChasterApp\Request;
 
 class Locks extends Request implements LocksInterface
 {
-    use Utils;
-
     public function getBaseRoute(): string
     {
         return 'locks';
@@ -30,16 +29,15 @@ class Locks extends Request implements LocksInterface
      *                              Available values : active, archived, all
      *                              Default value : active
      *
-     * @return object
+     * @return \ChasterApp\Interfaces\ResponseInterface
      *
-     * @throws JsonChasterException
-     * @throws RequestChasterException
-     * @throws ResponseChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
-    public function locks(LocksStatus $status = LocksStatus::active): object
+    public function locks(LocksStatus $status = LocksStatus::active): ResponseInterface
     {
         $this->getClient('', ['status' => $status->name]);
-        return $this->getResponseContents(200);
+        return $this->response(200);
     }
 
     /**
@@ -57,13 +55,14 @@ class Locks extends Request implements LocksInterface
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws JsonChasterException
      */
-    public function updateTime(string $lockId, array $body): void
+    public function updateTime(string $lockId, array $body): ResponseInterface
     {
-        $this->checkMandatory($lockId, 'Lock ID');
-        $this->checkMandatory($body, 'Body');
-        $this->postClient($lockId . '/update-time', $body);
-        $this->checkResponseCode(204);
+        $this->checkMandatoryArgument($lockId, 'Lock ID');
+        $this->checkMandatoryArgument($body, 'Body');
+        $this->postClient($lockId . '/update-time', options:  new ClientOptions(json: $body));
+        return $this->response(204);
     }
 
     /**
@@ -82,11 +81,11 @@ class Locks extends Request implements LocksInterface
      * @throws RequestChasterException
      * @throws ResponseChasterException
      */
-    public function freeze(string $lockId, array $body): void
+    public function freeze(string $lockId, array|LockFrozen $body): ResponseInterface
     {
-        $this->checkMandatory($lockId, 'Lock ID');
-        $this->checkMandatory($body, 'Body');
-        $this->postClient($lockId . '/freeze', $body);
-        $this->checkResponseCode(204);
+        $this->checkMandatoryArgument($lockId, 'Lock ID');
+        $this->checkMandatoryArgument($body, 'Body');
+        $this->postClient($lockId . '/freeze', options: new ClientOptions(json: $body));
+        return $this->response(204);
     }
 }
