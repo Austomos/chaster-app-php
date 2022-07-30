@@ -37,6 +37,9 @@
         "fix": "phpcbf src --standard=PSR12 -p",
 
         "test": "phpunit --colors=always --testdox tests",
-        "test:coverage": "@test  --coverage-html=coverage-html"
+        "test:coverage": [
+            "@test --coverage-html=coverage-html",
+            "open coverage-html/index.html"
+        ]
     }
 }
