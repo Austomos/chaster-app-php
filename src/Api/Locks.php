@@ -32,7 +32,7 @@ class Locks extends Request implements LocksInterface
      * @return \ChasterApp\Interfaces\ResponseInterface
      *
      * @throws \ChasterApp\Exception\RequestChasterException
-     * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException|\ChasterApp\Exception\JsonChasterException
      */
     public function locks(LocksStatus $status = LocksStatus::active): ResponseInterface
     {
@@ -79,9 +79,9 @@ class Locks extends Request implements LocksInterface
      *
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
-     * @throws ResponseChasterException
+     * @throws ResponseChasterException|\ChasterApp\Exception\JsonChasterException
      */
-    public function freeze(string $lockId, array|LockFrozen $body): ResponseInterface
+    public function freeze(string $lockId, array $body): ResponseInterface
     {
         $this->checkMandatoryArgument($lockId, 'Lock ID');
         $this->checkMandatoryArgument($body, 'Body');

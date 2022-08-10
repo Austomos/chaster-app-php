@@ -29,6 +29,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      *
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function get(SharedLockStatus $status = SharedLockStatus::active): ResponseInterface
     {
@@ -67,6 +68,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function create(array|CreateSharedLockInterface $body): ResponseInterface
     {
@@ -87,6 +89,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function find(string $sharedLockId): ResponseInterface
     {
@@ -127,6 +130,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function update(string $sharedLockId, array|CreateSharedLockInterface $body): ResponseInterface
     {
@@ -146,6 +150,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws InvalidArgumentChasterException
      * @throws RequestChasterException
      * @throws ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function archive(string $sharedLockId): ResponseInterface
     {
@@ -212,6 +217,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function isFavorite(string $sharedLockId): ResponseInterface
     {
@@ -231,6 +237,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function addFavorite(string $sharedLockId): ResponseInterface
     {
@@ -274,6 +281,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      * @throws \ChasterApp\Exception\InvalidArgumentChasterException
      * @throws \ChasterApp\Exception\RequestChasterException
      * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function getFavorites(int $limit = 15, ?string $lastId = null): ResponseInterface
     {
