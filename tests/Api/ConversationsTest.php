@@ -160,6 +160,34 @@ class ConversationsTest extends TestCase
         $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
     }
 
+    public function testUnreadBodyInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Body is mandatory, can\'t be empty');
+        try {
+            $this->conversation->unread('mock_conversation_id', []);
+        } catch (
+            JsonChasterException | RequestChasterException | ResponseChasterException $e
+        ) {
+            $this->fail($e->getMessage());
+        }
+    }
+
+    public function testUnreadConversationIdInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Conversation ID is mandatory, can\'t be empty');
+        try {
+            $this->conversation->send('', ['mock_body']);
+        } catch (
+            JsonChasterException | RequestChasterException | ResponseChasterException $e
+        ) {
+            $this->fail($e->getMessage());
+        }
+    }
+
     public function testByUser(): void
     {
         $this->assertTrue(true);
