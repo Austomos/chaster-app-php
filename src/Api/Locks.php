@@ -38,7 +38,7 @@ class Locks extends Request implements LocksInterface
      */
     public function locks(LocksStatus $status = LocksStatus::active): ResponseInterface
     {
-        $this->getClient('', ['status' => $status->name]);
+        $this->getClient('', options: new ClientOptions(query: ['status' => $status->name]));
         return $this->response(200);
     }
 

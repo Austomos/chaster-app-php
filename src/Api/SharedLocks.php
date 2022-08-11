@@ -33,7 +33,7 @@ class SharedLocks extends Request implements SharedLocksInterface
      */
     public function get(SharedLockStatus $status = SharedLockStatus::active): ResponseInterface
     {
-        $this->getClient('locks/shared-locks', ['status' => $status]);
+        $this->getClient('locks/shared-locks', options: new ClientOptions(query: ['status' => $status]));
         return $this->response(200);
     }
 
