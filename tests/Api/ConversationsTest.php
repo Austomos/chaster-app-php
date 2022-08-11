@@ -4,32 +4,23 @@ namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Conversations;
 use ChasterApp\Data\Enum\ConversationsStatus;
+use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
+use ChasterApp\Exception\ResponseChasterException;
 use DateTime;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
-use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use Tests\ChasterApp\TestCase;
 
 class ConversationsTest extends TestCase
 {
     protected function setUp(): void
     {
         $this->conversation = new Conversations('mock_token');
-        $reflection = new \ReflectionClass(Conversations::class);
-        $this->clientProperty = $reflection->getProperty('client');
         parent::setUp();
-    }
-
-    protected function setClientProperty(MockHandler $mockHandler): void
-    {
-        $this->clientProperty->setValue($this->conversation, new Client([
-            'handler' => HandlerStack::create($mockHandler)
-        ]));
     }
 
     public function testGetSuccess(): void
@@ -38,18 +29,29 @@ class ConversationsTest extends TestCase
             new Response(200, [], '{"body": "mock_value"}'),
             new Response(200, [], '{"body": "mock_value_2"}'),
         ]);
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->conversation, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
-        $responseOne = $this->conversation->get(status: ConversationsStatus::approved);
+        try {
+            $responseOne = $this->conversation->get();
+        } catch (JsonChasterException | RequestChasterException | ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
         $this->assertSame('/conversations', $this->conversation->getRoute());
 
         $this->assertEquals(200, $responseOne->getStatusCode());
         $this->assertEquals((object) ['body' => 'mock_value'], $responseOne->getBodyObject());
 
-        $responseTwo = $this->conversation->get(
-            status: ConversationsStatus::approved,
-            offset: new DateTime('now')
-        );
+        try {
+            $responseTwo = $this->conversation->get(
+                offset: new DateTime('now')
+            );
+        } catch (JsonChasterException | RequestChasterException | ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
         $this->assertEquals(200, $responseTwo->getStatusCode());
         $this->assertEquals((object) ['body' => 'mock_value_2'], $responseTwo->getBodyObject());
     }
@@ -57,23 +59,26 @@ class ConversationsTest extends TestCase
     public function testGetException(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], '{"body": "mock_value"}'),
-            new Response(200, [], '{"body": "mock_value_2"}'),
             new RequestException(
                 'Unauthorized mock',
                 new Request('GET', '/conversations'),
                 new Response(401, reason: 'Unauthorized mock')
             )
         ]);
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->conversation, $mock);
+        } catch (\ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
         $this->expectException(RequestChasterException::class);
+        $this->expectExceptionCode(401);
+        $this->expectExceptionMessage('Unauthorized mock');
+
         try {
-            $this->conversation->get(status: ConversationsStatus::approved);
-        } catch (RequestChasterException $e) {
-            $this->assertSame('Request failed: Unauthorized mock - /conversations', $e->getMessage());
-            $this->assertEquals(401, $e->getCode());
-            throw $e;
+            $this->conversation->get();
+        } catch (JsonChasterException | ResponseChasterException $e) {
+            $this->fail($e->getMessage());
         }
     }
 
@@ -128,5 +133,10 @@ class ConversationsTest extends TestCase
     public function testCreate(): void
     {
         $this->assertTrue(true);
+    }
+
+    protected function getReflectionClass(): string
+    {
+        return Conversations::class;
     }
 }

@@ -9,8 +9,10 @@ use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\LocksInterface;
+use ChasterApp\Interfaces\RequestBody\Locks\LockHistoryInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
+use ChasterApp\RequestBody\Locks\LockHistory;
 
 class Locks extends Request implements LocksInterface
 {
@@ -87,5 +89,30 @@ class Locks extends Request implements LocksInterface
         $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($lockId . '/freeze', options: new ClientOptions(json: $body));
         return $this->response(204);
+    }
+
+    /**
+     * Return lock history
+     * Returns a list of action logs
+     * @link https://api.chaster.app/api/#/Locks/LockController_getLockHistory
+     *
+     * @param string $lockId
+     * @param array|LockHistory $body
+     *
+     * @return \ChasterApp\Interfaces\ResponseInterface
+     *
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\InvalidArgumentChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     */
+    public function history(string $lockId, array|LockHistoryInterface $body): ResponseInterface
+    {
+        $this->isNotEmptyMandatoryArgument($lockId, 'Lock ID');
+        $body = $body instanceof LockHistoryInterface ? $body->getArrayCopy() : $body;
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
+
+        $this->postClient($lockId . '/history', options: new ClientOptions(json: $body));
+        return $this->response(201);
     }
 }
