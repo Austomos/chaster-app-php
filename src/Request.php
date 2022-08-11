@@ -34,11 +34,8 @@ abstract class Request implements RequestInterface
     /**
      * @throws RequestChasterException
      */
-    public function getClient(string $uri, ?array $query = null, array|ClientOptionsInterface $options = []): void
+    public function getClient(string $uri, array|ClientOptionsInterface $options = []): void
     {
-        if (!empty($query)) {
-            $options['query'] = $query;
-        }
         $this->client('GET', $uri, $options);
     }
 
