@@ -4,9 +4,14 @@ namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Locks;
 use ChasterApp\Exception\ChasterException;
+use ChasterApp\Exception\InvalidArgumentChasterException;
+use ChasterApp\Exception\JsonChasterException;
+use ChasterApp\Exception\RequestChasterException;
+use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\RequestBody\Locks\LockHistory;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use ReflectionException;
 use Tests\ChasterApp\TestCase;
 
 class LocksTest extends TestCase
@@ -26,7 +31,7 @@ class LocksTest extends TestCase
 
         try {
             $this->setClientProperty($this->locks, $mock);
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             $this->fail($e->getMessage());
         }
 
@@ -51,6 +56,42 @@ class LocksTest extends TestCase
 
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
+    }
+
+    public function testHistoryEmptyLockIdInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Lock ID is mandatory, can\'t be empty');
+        try {
+            $this->locks->history('', ['mock_body']);
+        } catch (JsonChasterException | RequestChasterException | ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
+    }
+
+    public function testHistoryEmptyArrayBodyInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Body is mandatory, can\'t be empty');
+        try {
+            $this->locks->history('mock_lock_id', []);
+        } catch (JsonChasterException | RequestChasterException | ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
+    }
+
+    public function testHistoryEmptyLockHistoryBodyInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Body is mandatory, can\'t be empty');
+        try {
+            $this->locks->history('mock_lock_id', new LockHistory());
+        } catch (JsonChasterException | RequestChasterException | ResponseChasterException $e) {
+            $this->fail($e->getMessage());
+        }
     }
 
     protected function getReflectionClass(): string
