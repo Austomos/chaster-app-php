@@ -108,10 +108,10 @@ class Locks extends Request implements LocksInterface
      */
     public function history(string $lockId, array|LockHistoryInterface $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($lockId, 'Lock ID');
+        $this->isNotEmptyMandatoryArgument($lockId, 'Lock ID');
         $body = $body instanceof LockHistoryInterface ? $body->getArrayCopy() : $body;
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
 
-        $this->checkMandatoryArgument($body, 'Body');
         $this->postClient($lockId . '/history', options: new ClientOptions(json: $body));
         return $this->response(201);
     }
