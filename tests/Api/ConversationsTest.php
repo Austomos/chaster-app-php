@@ -3,7 +3,6 @@
 namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Conversations;
-use ChasterApp\Data\Enum\ConversationsStatus;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
@@ -27,8 +26,8 @@ class ConversationsTest extends TestCase
     public function testGetSuccess(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], '{"body": "mock_value"}'),
-            new Response(200, [], '{"body": "mock_value_2"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"body": "mock_value_2"}'),
         ]);
         try {
             $this->setClientProperty($this->conversation, $mock);
@@ -54,7 +53,7 @@ class ConversationsTest extends TestCase
             $this->fail($e->getMessage());
         }
         $this->assertEquals(200, $responseTwo->getStatusCode());
-        $this->assertEquals((object) ['body' => 'mock_value_2'], $responseTwo->getBodyObject());
+        $this->assertEquals(['body' => 'mock_value_2'], $responseTwo->getBodyArray());
     }
 
     public function testGetException(): void
@@ -68,7 +67,7 @@ class ConversationsTest extends TestCase
         ]);
         try {
             $this->setClientProperty($this->conversation, $mock);
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             $this->fail($e->getMessage());
         }
 
@@ -86,7 +85,7 @@ class ConversationsTest extends TestCase
     public function testSendSuccess(): void
     {
         $mock = new MockHandler([
-            new Response(201, [], '{"body": "mock_value"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
         ]);
 
         try {
@@ -139,7 +138,11 @@ class ConversationsTest extends TestCase
     public function testUnreadSuccess(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], '{"body": "mock_value"}'),
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                '{"body": "mock_value"}'
+            ),
         ]);
         try {
             $this->setClientProperty($this->conversation, $mock);

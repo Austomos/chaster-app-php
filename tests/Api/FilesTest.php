@@ -3,61 +3,49 @@
 namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Files;
+use ChasterApp\Exception\ChasterException;
 use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\RequestBody\Files\UploadFilesInterface;
 use ChasterApp\RequestBody\Files\UploadFiles;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use JetBrains\PhpStorm\ArrayShape;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
+use ReflectionException;
+use Tests\ChasterApp\TestCase;
 
 class FilesTest extends TestCase
 {
     protected function setUp(): void
     {
         $this->files = new Files('mock_token');
-        $reflection = new ReflectionClass(Files::class);
-        $this->clientProperty = $reflection->getProperty('client');
         parent::setUp();
     }
 
     public function testFindSuccess(): void
     {
         $mock = new MockHandler([
-            new Response(201, [], '{"body": "mock_value"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
         ]);
 
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->files, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
         try {
             $response = $this->files->find(fileKey: 'mock_file_key');
-        } catch (
-            InvalidArgumentChasterException | RequestChasterException | ResponseChasterException | JsonChasterException
-            $e
-        ) {
+        } catch (ChasterException $e) {
             $this->fail($e->getMessage());
         }
         $this->assertSame('/files', $this->files->getRoute());
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals((object)['body' => 'mock_value'], $response->getBodyObject());
-    }
-
-    protected function setClientProperty(MockHandler $mockHandler): void
-    {
-        $this->clientProperty->setValue(
-            $this->files,
-            new Client([
-                'handler' => HandlerStack::create($mockHandler)
-            ])
-        );
     }
 
     public function testFindInvalidArgumentException(): void
@@ -82,7 +70,11 @@ class FilesTest extends TestCase
             ),
         ]);
 
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->files, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
         $this->expectException(RequestChasterException::class);
         $this->expectExceptionCode(401);
         $this->expectExceptionMessage('Request failed: Unauthorized mock - /files/mock_file_key');
@@ -96,10 +88,18 @@ class FilesTest extends TestCase
     public function testFindResponseException(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], '{"body": "mock_value"}'),
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                '{"body": "mock_value"}'
+            ),
         ]);
 
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->files, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
         $this->expectException(ResponseChasterException::class);
         $this->expectExceptionCode(200);
         $this->expectExceptionMessage('HTTP Code Expected: 201 Actual: 200 Reason: OK');
@@ -221,16 +221,17 @@ class FilesTest extends TestCase
     public function testUploadSuccess(array|UploadFilesInterface $files): void
     {
         $mock = new MockHandler([
-            new Response(201, [], '{"body": "mock_value"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
         ]);
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->files, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
         try {
             $response = $this->files->upload($files);
-        } catch (
-            InvalidArgumentChasterException | RequestChasterException | ResponseChasterException | JsonChasterException
-            $e
-        ) {
+        } catch (ChasterException $e) {
             $this->fail($e->getMessage());
         }
         $this->assertSame('/files', $this->files->getRoute());
@@ -303,5 +304,10 @@ class FilesTest extends TestCase
                 ]),
             ],
         ];
+    }
+
+    protected function getReflectionClass(): string
+    {
+        return Files::class;
     }
 }
