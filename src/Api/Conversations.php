@@ -191,8 +191,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function unread(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $this->putClient($conversationId . '/unread', options: new ClientOptions(json: $body));
         return $this->response(200);
     }

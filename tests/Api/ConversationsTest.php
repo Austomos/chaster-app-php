@@ -136,9 +136,28 @@ class ConversationsTest extends TestCase
         }
     }
 
-    public function testUnread(): void
+    public function testUnreadSuccess(): void
     {
-        $this->assertTrue(true);
+        $mock = new MockHandler([
+            new Response(200, [], '{"body": "mock_value"}'),
+        ]);
+        try {
+            $this->setClientProperty($this->conversation, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
+        try {
+            $response = $this->conversation->unread('mock_conversation_id', ['mock_body']);
+        } catch (
+            InvalidArgumentChasterException
+            | JsonChasterException
+            | RequestChasterException
+            | ResponseChasterException $e
+        ) {
+            $this->fail($e->getMessage());
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
     }
 
     public function testByUser(): void
