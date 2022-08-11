@@ -125,8 +125,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function send(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $this->postClient($conversationId, options: new ClientOptions(json: $body));
         return $this->response(201);
     }

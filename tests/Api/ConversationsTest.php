@@ -4,6 +4,7 @@ namespace Tests\ChasterApp\Api;
 
 use ChasterApp\Api\Conversations;
 use ChasterApp\Data\Enum\ConversationsStatus;
+use ChasterApp\Exception\InvalidArgumentChasterException;
 use ChasterApp\Exception\JsonChasterException;
 use ChasterApp\Exception\RequestChasterException;
 use ChasterApp\Exception\ResponseChasterException;
@@ -82,27 +83,57 @@ class ConversationsTest extends TestCase
         }
     }
 
-    public function testSend(): void
+    public function testSendSuccess(): void
     {
-        $this->assertTrue(true);
-        return;
         $mock = new MockHandler([
             new Response(201, [], '{"body": "mock_value"}'),
-            new Response(200, [], '{"body": "mock_value"}'),
-            new RequestException(
-                'Unauthorized mock',
-                new Request('GET', '/conversations'),
-                new Response(401, reason: 'Unauthorized mock')
-            )
         ]);
 
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->conversation, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
-        $response = $this->conversation->get(status: ConversationsStatus::approved);
-        $this->assertSame('/conversations', $this->conversation->getRoute());
-        $this->assertEquals((object) ['body' => 'mock_value'], $response);
+        try {
+            $response = $this->conversation->send('mock_conversation_id', ['mock_body']);
+        } catch (
+            InvalidArgumentChasterException
+            | JsonChasterException
+            | RequestChasterException
+            | ResponseChasterException $e
+        ) {
+            $this->fail($e->getMessage());
+        }
+        $this->assertEquals((object) ['body' => 'mock_value'], $response->getBodyObject());
+    }
 
-        $this->assertTrue(true);
+    public function testSendConversationIdInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Conversation ID is mandatory, can\'t be empty');
+        try {
+            $this->conversation->send('', ['mock_body']);
+        } catch (
+            JsonChasterException | RequestChasterException | ResponseChasterException $e
+        ) {
+            $this->fail($e->getMessage());
+        }
+    }
+
+    public function testSendBodyInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentChasterException::class);
+        $this->expectExceptionCode(400);
+        $this->expectExceptionMessage('Body is mandatory, can\'t be empty');
+        try {
+            $this->conversation->send('mock_conversation_id', []);
+        } catch (
+            JsonChasterException | RequestChasterException | ResponseChasterException $e
+        ) {
+            $this->fail($e->getMessage());
+        }
     }
 
     public function testUnread(): void
