@@ -23,26 +23,36 @@ class Response extends \GuzzleHttp\Psr7\Response implements ResponseInterface
             $response->getProtocolVersion(),
             $response->getReasonPhrase()
         );
-        try {
-            $this->json =  json_decode($this->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new JsonChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
+        if ($this->getHeaderLine('Content-Type') === 'application/json') {
+            try {
+                $this->json =  json_decode($this->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                throw new JsonChasterException('Json decode failed: ' . $e->getMessage(), $e->getCode(), $e);
+            }
         }
     }
 
     /**
      * @return object
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function getBodyObject(): object
     {
+        if (!isset($this->json)) {
+            throw new JsonChasterException('Body object isn\'t available: json is not set');
+        }
         return (object) $this->json;
     }
 
     /**
      * @return array
+     * @throws \ChasterApp\Exception\JsonChasterException
      */
     public function getBodyArray(): array
     {
+        if (!isset($this->json)) {
+            throw new JsonChasterException('Body object isn\'t available: json is not set');
+        }
         return (array) $this->json;
     }
 }
