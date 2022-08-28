@@ -11,27 +11,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
+use ReflectionException;
+use Tests\ChasterApp\TestCase;
 
 class KeyholderTest extends TestCase
 {
     protected function setUp(): void
     {
         $this->keyholder = new Keyholder('mock_token');
-        $reflection = new ReflectionClass($this->keyholder);
-        $this->clientProperty = $reflection->getProperty('client');
         parent::setUp();
-    }
-
-    protected function setClientProperty(MockHandler $mockHandler): void
-    {
-        $this->clientProperty->setValue(
-            $this->keyholder,
-            new Client([
-                'handler' => HandlerStack::create($mockHandler)
-            ])
-        );
     }
 
     public function testGetBaseRouteSuccess(): void
@@ -42,10 +30,14 @@ class KeyholderTest extends TestCase
     public function testSearchSuccess(): void
     {
         $mock = new MockHandler([
-            new Response(201, [], '{"body": "mock_value"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
         ]);
 
-        $this->setClientProperty($mock);
+        try {
+            $this->setClientProperty($this->keyholder, $mock);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
         try {
             $response = $this->keyholder->search(body: ['mock_key' => 'mock_value']);
@@ -70,5 +62,10 @@ class KeyholderTest extends TestCase
         } catch (RequestChasterException | ResponseChasterException | JsonChasterException $e) {
             $this->fail($e->getMessage());
         }
+    }
+
+    protected function getReflectionClass(): string
+    {
+        return Keyholder::class;
     }
 }

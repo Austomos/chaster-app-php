@@ -77,7 +77,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function create(array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $options = new ClientOptions(json: $body);
         $this->postClient('', options: $options);
         return $this->response(201);
@@ -98,7 +98,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function byUser(string $userId): ResponseInterface
     {
-        $this->checkMandatoryArgument($userId, 'User ID');
+        $this->isNotEmptyMandatoryArgument($userId, 'User ID');
         $this->getClient('by-user/' . $userId);
         return $this->response(200);
     }
@@ -125,8 +125,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function send(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $this->postClient($conversationId, options: new ClientOptions(json: $body));
         return $this->response(201);
     }
@@ -146,7 +146,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function find(string $conversationId): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
         $this->getClient($conversationId);
         return $this->response(200);
     }
@@ -168,8 +168,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function status(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $this->putClient($conversationId . '/status', options: new ClientOptions(json: $body));
         return $this->response(200);
     }
@@ -191,8 +191,8 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function unread(string $conversationId, array $body): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
-        $this->checkMandatoryArgument($body, 'Body');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($body, 'Body');
         $this->putClient($conversationId . '/unread', options: new ClientOptions(json: $body));
         return $this->response(200);
     }
@@ -214,7 +214,7 @@ class Conversations extends Request implements ConversationsInterface
      */
     public function messages(string $conversationId, int $limit = 50, ?string $lastId = null): ResponseInterface
     {
-        $this->checkMandatoryArgument($conversationId, 'Conversation ID');
+        $this->isNotEmptyMandatoryArgument($conversationId, 'Conversation ID');
         $options = new ClientOptions();
         $options->setQueryValue('limit', $limit);
         if (isset($lastId)) {

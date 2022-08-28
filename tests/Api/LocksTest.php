@@ -25,8 +25,8 @@ class LocksTest extends TestCase
     public function testHistorySuccess(): void
     {
         $mock = new MockHandler([
-            new Response(201, [], '{"body": "mock_value"}'),
-            new Response(201, [], '{"body": "mock_value"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
+            new Response(201, ['Content-Type' => 'application/json'], '{"body": "mock_value"}'),
         ]);
 
         try {
