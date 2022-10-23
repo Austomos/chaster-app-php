@@ -2,6 +2,10 @@
 
 namespace ChasterApp;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeZone;
+
 class Utilities
 {
     /**
@@ -16,5 +20,10 @@ class Utilities
     public static function arrayKeysExist(array $keys, array $array): bool
     {
         return count($keys) > 0 && !array_diff_key(array_flip($keys), $array);
+    }
+
+    public static function getFormattedStringFromDateTime(DateTime|DateTimeImmutable $datetime): string
+    {
+        return $datetime->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z');
     }
 }
