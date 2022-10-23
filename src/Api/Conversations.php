@@ -20,7 +20,7 @@ class Conversations extends Request implements ConversationsInterface
      * @link https://api.chaster.app/api/#/Messaging/MessagingController_getConversations
      *
      * @param int $limit The query limit
-     * @param ConversationsStatus $status The conversation status
+     * @param \ChasterApp\Data\Enum\ConversationsStatus|string $status The conversation status
      * @param DateTime|string $offset
      * UTC DateTime -> format 'Y-m-d\TH:i:s.v\Z'
      * The query offset, date of last message
@@ -28,13 +28,13 @@ class Conversations extends Request implements ConversationsInterface
      *
      * @return ResponseInterface
      *
-     * @throws RequestChasterException
-     * @throws ResponseChasterException
-     * @throws JsonChasterException
+     * @throws \ChasterApp\Exception\JsonChasterException
+     * @throws \ChasterApp\Exception\RequestChasterException
+     * @throws \ChasterApp\Exception\ResponseChasterException
      */
     public function get(
         int $limit = 50,
-        ConversationsStatus $status = ConversationsStatus::approved,
+        ConversationsStatus|string $status = ConversationsStatus::approved,
         DateTime|string $offset = ''
     ): ResponseInterface {
         if (!empty($offset)) {
