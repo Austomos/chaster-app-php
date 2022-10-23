@@ -11,7 +11,9 @@ use ChasterApp\Exception\ResponseChasterException;
 use ChasterApp\Interfaces\Api\ConversationsInterface;
 use ChasterApp\Interfaces\ResponseInterface;
 use ChasterApp\Request;
+use ChasterApp\Utilities;
 use DateTime;
+use DateTimeImmutable;
 
 class Conversations extends Request implements ConversationsInterface
 {
@@ -21,7 +23,7 @@ class Conversations extends Request implements ConversationsInterface
      *
      * @param int $limit The query limit
      * @param \ChasterApp\Data\Enum\ConversationsStatus|string $status The conversation status
-     * @param DateTime|string $offset
+     * @param DateTime|DateTimeImmutable|string $offset
      * UTC DateTime -> format 'Y-m-d\TH:i:s.v\Z'
      * The query offset, date of last message
      * Use the field lastMessageAt for pagination
@@ -35,12 +37,13 @@ class Conversations extends Request implements ConversationsInterface
     public function get(
         int $limit = 50,
         ConversationsStatus|string $status = ConversationsStatus::approved,
-        DateTime|string $offset = ''
+        DateTime|DateTimeImmutable|string $offset = ''
     ): ResponseInterface {
         if (!empty($offset)) {
             $offset = match (true) {
                 is_string($offset) => $offset,
-                $offset instanceof DateTime => $offset->format('Y-m-d\TH:i:s.v\Z')
+                $offset instanceof DateTime,
+                $offset instanceof DateTimeImmutable => Utilities::getFormattedStringFromDateTime($offset)
             };
         }
         $options = new ClientOptions(query: [
